@@ -183,6 +183,9 @@
   .msg-filter select{padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:13.5px;}
   .meeting-fields{border-top:1px dashed var(--line);margin-top:14px;padding-top:14px;}
   .meeting-note{font-size:12.5px;color:var(--ink-soft);margin-bottom:12px;}
+  .best-price{border-color:var(--green) !important;background:var(--green-wash);}
+  .best-price-badge{background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;}
+  .receipt-link{font-size:12.5px;color:var(--amber-deep);text-decoration:underline;}
 
   @media (max-width:640px){
     header.topbar{padding:10px 14px;gap:8px;}
@@ -286,6 +289,7 @@
     <button data-tab="requests">Event Requests <span class="count-chip" id="req-chip" style="display:none;">0</span></button>
     <button data-tab="wishlist">Venue Wishlist</button>
     <button data-tab="messages">Message to Management</button>
+    <button data-tab="purchases" id="purchases-tab-btn" style="display:none;">Purchases &amp; Receipts</button>
   </nav>
 
   <main>
@@ -424,6 +428,53 @@
         <option value="">All types</option><option>Suggestion</option><option>Complaint</option><option>Call-out</option><option>Meeting request</option>
       </select></div>
       <div id="messages-list"></div>
+    </div>
+
+    <!-- ---- PURCHASES & RECEIPTS ---- -->
+    <div id="tab-purchases" style="display:none;">
+      <div class="section-head"><h2>Purchases &amp; Receipts</h2></div>
+      <div class="muted" style="margin-bottom:14px;">Management only. Track what you bought, from where, and for how much — so you can compare prices across vendors over time.</div>
+
+      <div class="fab-form">
+        <h3>Log a purchase or price check</h3>
+        <div class="field">
+          <label>Entry type</label>
+          <select id="pur-type">
+            <option value="purchase">Purchase (we bought it)</option>
+            <option value="price_check">Price check (just checking, didn't buy)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Item</label>
+          <div class="search-wrap">
+            <input type="text" id="pur-item-search" placeholder="Search inventory, or type a new item name…" autocomplete="off">
+            <div class="search-results" id="pur-item-results" style="display:none;"></div>
+          </div>
+          <div id="pur-selected-chip"></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>Vendor</label><input type="text" id="pur-vendor" list="pur-vendor-list" placeholder="e.g. Costco"><datalist id="pur-vendor-list"></datalist></div>
+          <div class="field"><label id="pur-date-label">Purchase date</label><input type="date" id="pur-date"></div>
+        </div>
+        <div class="form-row" id="pur-purchase-fields">
+          <div class="field"><label>Quantity</label><input type="number" id="pur-qty" min="1" value="1"></div>
+          <div class="field"><label>Total price paid ($)</label><input type="number" id="pur-price" min="0" step="0.01"></div>
+        </div>
+        <div class="form-row" id="pur-pricecheck-fields" style="display:none;">
+          <div class="field"><label>Price per unit ($)</label><input type="number" id="pur-unitprice" min="0" step="0.01"></div>
+        </div>
+        <div class="field" id="pur-restock-field" style="display:none;">
+          <label class="low-only-toggle"><input type="checkbox" id="pur-restock-check"> Also add this quantity to the item's inventory count</label>
+        </div>
+        <div class="field"><label>Receipt / reference link <span class="muted">(optional — Google Drive, email, a photo of the shelf tag, etc.)</span></label><input type="url" id="pur-receipt-link" placeholder="https://..."></div>
+        <div class="field"><label>Notes <span class="muted">(optional)</span></label><textarea id="pur-notes" rows="2"></textarea></div>
+        <button type="button" class="btn btn-amber" id="pur-submit">Log it</button>
+      </div>
+
+      <div class="inv-toolbar">
+        <select id="pur-compare-select"><option value="">All entries (newest first)</option></select>
+      </div>
+      <div id="purchases-list"></div>
     </div>
 
   </main>
@@ -746,9 +797,9 @@ const SEED_ITEMS = [
 
 /* ============================================================ STATE ============================================================ */
 let currentUser = null, isAdmin = false, currentLocation = 'the75', currentTab = 'inventory', appInited = false;
-let itemsCache = [], maintenanceCache = [], requestsCache = [], wishlistCache = [], messagesCache = [], damagelogCache = [];
-let unsubItems=null, unsubMaint=null, unsubReq=null, unsubWish=null, unsubMsg=null, unsubDamage=null;
-let restockTargetItem = null, deleteTargetItem = null, selectedDamageItem = null;
+let itemsCache = [], maintenanceCache = [], requestsCache = [], wishlistCache = [], messagesCache = [], damagelogCache = [], purchasesCache = [];
+let unsubItems=null, unsubMaint=null, unsubReq=null, unsubWish=null, unsubMsg=null, unsubDamage=null, unsubPurchases=null;
+let restockTargetItem = null, deleteTargetItem = null, selectedDamageItem = null, selectedPurchaseItem = null;
 let categoryCollapsed = {};
 let invSearchTerm = '', invLowOnly = false, msgTypeFilter = '';
 
@@ -818,11 +869,12 @@ auth.onAuthStateChanged(user=>{
     isAdmin = ADMIN_EMAILS.includes(user.email);
     $('login-screen').style.display='none';
     refreshWhoLabel(); initApp();
+    $('purchases-tab-btn').style.display = isAdmin ? 'inline-block' : 'none';
     if(!user.displayName) $('name-backdrop').classList.add('open');
     $('picker-screen').style.display='flex'; $('app').style.display='none';
   } else {
     $('login-screen').style.display='flex'; $('picker-screen').style.display='none'; $('app').style.display='none';
-    [unsubItems,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage].forEach(u=>u&&u());
+    [unsubItems,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage,unsubPurchases].forEach(u=>u&&u());
   }
 });
 
@@ -838,9 +890,10 @@ function populateSelect(sel, arr){ sel.innerHTML = arr.map(v=>`<option value="${
 function setTab(tab){
   currentTab = tab;
   document.querySelectorAll('nav.tabs button').forEach(b=> b.classList.toggle('active', b.dataset.tab===tab));
-  ['inventory','damagelog','maintenance','requests','wishlist','messages'].forEach(t=>{ $('tab-'+t).style.display = (t===tab)?'block':'none'; });
+  ['inventory','damagelog','maintenance','requests','wishlist','messages','purchases'].forEach(t=>{ $('tab-'+t).style.display = (t===tab)?'block':'none'; });
   if(tab==='damagelog') renderDamageLog();
   if(tab==='messages') renderMessages();
+  if(tab==='purchases') renderPurchases();
 }
 function setLocation(loc){
   currentLocation = loc;
@@ -855,7 +908,7 @@ function setLocation(loc){
 
 /* ============================================================ FIRESTORE SUBSCRIPTIONS ============================================================ */
 function subscribeAll(){
-  [unsubItems,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage].forEach(u=>u&&u());
+  [unsubItems,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage,unsubPurchases].forEach(u=>u&&u());
 
   unsubItems = db.collection('items').where('location','==',currentLocation)
     .onSnapshot(snap=>{ itemsCache = snap.docs.map(d=>({id:d.id, ...d.data()})); renderInventory(); }, e=>console.error(e));
@@ -874,6 +927,12 @@ function subscribeAll(){
       damagelogCache = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(b.timestamp?.seconds||0)-(a.timestamp?.seconds||0));
       if(currentTab==='damagelog') renderDamageLog();
     }, e=>console.error(e));
+
+  unsubPurchases = isAdmin ? db.collection('purchases').where('location','==',currentLocation)
+    .onSnapshot(snap=>{
+      purchasesCache = snap.docs.map(d=>({id:d.id, ...d.data()}));
+      if(currentTab==='purchases') renderPurchases();
+    }, e=>console.error(e)) : null;
 
   subscribeMessages();
 }
@@ -1294,6 +1353,161 @@ window.deleteMessage = async function(id){
   if(!confirm('Delete this message?')) return;
   try{ await db.collection('messages').doc(id).delete(); showToast('Deleted.'); }
   catch(err){ console.error(err); showToast('Could not delete — try again.'); }
+};
+
+/* ============================================================ PURCHASES & RECEIPTS ============================================================ */
+$('pur-date').valueAsDate = new Date();
+
+function updatePurTypeUI(){
+  const type = $('pur-type').value;
+  $('pur-purchase-fields').style.display = type==='purchase' ? 'flex' : 'none';
+  $('pur-pricecheck-fields').style.display = type==='price_check' ? 'flex' : 'none';
+  $('pur-date-label').textContent = type==='purchase' ? 'Purchase date' : 'Date checked';
+  updateRestockVisibility();
+}
+$('pur-type').addEventListener('change', updatePurTypeUI);
+
+function updateRestockVisibility(){
+  const showRestock = $('pur-type').value==='purchase' && selectedPurchaseItem && selectedPurchaseItem.id;
+  $('pur-restock-field').style.display = showRestock ? 'block' : 'none';
+  if(!showRestock) $('pur-restock-check').checked = false;
+}
+
+function clearPurchaseSelection(){
+  selectedPurchaseItem = null;
+  $('pur-selected-chip').innerHTML = '';
+  $('pur-item-search').value = '';
+  $('pur-item-search').disabled = false;
+  $('pur-item-results').style.display = 'none';
+  updateRestockVisibility();
+}
+$('pur-item-search').addEventListener('input', e=>{
+  const term = e.target.value.trim().toLowerCase();
+  const results = $('pur-item-results');
+  if(!term){ results.style.display='none'; results.innerHTML=''; return; }
+  const matches = itemsCache.filter(i=> i.name.toLowerCase().includes(term)).slice(0,10);
+  let html = matches.map(i=> `<div class="search-result-row" onclick="pickPurchaseItem('${i.id}')">${i.name}<div class="search-result-cat">${i.category} · currently ${i.count}</div></div>`).join('');
+  html += `<div class="search-result-row" onclick="usePurchaseFreeText()"><em>Use "${e.target.value.trim()}" as a new item name</em></div>`;
+  results.innerHTML = html;
+  results.style.display = 'block';
+});
+window.pickPurchaseItem = function(itemId){
+  selectedPurchaseItem = itemsCache.find(i=>i.id===itemId);
+  $('pur-item-results').style.display = 'none';
+  $('pur-item-search').value = '';
+  $('pur-item-search').disabled = true;
+  $('pur-selected-chip').innerHTML = `<span class="selected-item-chip">${selectedPurchaseItem.name} <button type="button" onclick="clearPurchaseSelection()">✕</button></span>`;
+  updateRestockVisibility();
+};
+window.usePurchaseFreeText = function(){
+  const name = $('pur-item-search').value.trim();
+  if(!name) return;
+  selectedPurchaseItem = { id: null, name };
+  $('pur-item-results').style.display = 'none';
+  $('pur-item-search').value = '';
+  $('pur-item-search').disabled = true;
+  $('pur-selected-chip').innerHTML = `<span class="selected-item-chip">${name} (new) <button type="button" onclick="clearPurchaseSelection()">✕</button></span>`;
+  updateRestockVisibility();
+};
+
+$('pur-submit').addEventListener('click', async ()=>{
+  if(!selectedPurchaseItem){ showToast('Search and pick or type an item first.'); return; }
+  const entryType = $('pur-type').value;
+  const vendor = $('pur-vendor').value.trim();
+  const date = $('pur-date').value;
+  const notes = $('pur-notes').value.trim() || null;
+  const receiptUrl = $('pur-receipt-link').value.trim() || null;
+  if(!vendor){ showToast('Add a vendor.'); return; }
+
+  let payload = {
+    location: currentLocation, entryType, itemId: selectedPurchaseItem.id, itemName: selectedPurchaseItem.name,
+    vendor, date, notes, receiptUrl, purchasedBy: whoAmI(), purchasedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  let addToInventory = false, qty = 0;
+
+  if(entryType === 'purchase'){
+    qty = parseInt($('pur-qty').value || '1', 10);
+    const totalPrice = parseFloat($('pur-price').value || '0');
+    if(qty<=0 || !totalPrice){ showToast('Add a quantity and total price.'); return; }
+    payload.quantity = qty; payload.totalPrice = totalPrice; payload.unitPrice = totalPrice/qty;
+    addToInventory = $('pur-restock-check').checked;
+  } else {
+    const unitPrice = parseFloat($('pur-unitprice').value || '0');
+    if(!unitPrice){ showToast('Add the price per unit.'); return; }
+    payload.quantity = null; payload.totalPrice = null; payload.unitPrice = unitPrice;
+  }
+
+  $('pur-submit').disabled = true; $('pur-submit').textContent = 'Saving…';
+  try{
+    await db.collection('purchases').add(payload);
+    if(addToInventory && selectedPurchaseItem.id){
+      const item = itemsCache.find(i=>i.id===selectedPurchaseItem.id);
+      if(item){
+        await db.collection('items').doc(item.id).update({
+          count: item.count + qty, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+    }
+    showToast(entryType==='purchase' ? 'Purchase logged.' : 'Price check logged.');
+    clearPurchaseSelection();
+    $('pur-vendor').value=''; $('pur-qty').value=1; $('pur-price').value=''; $('pur-unitprice').value=''; $('pur-notes').value=''; $('pur-receipt-link').value='';
+    $('pur-date').valueAsDate = new Date();
+  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
+  finally{ $('pur-submit').disabled = false; $('pur-submit').textContent = 'Log it'; }
+});
+
+$('pur-compare-select').addEventListener('change', renderPurchases);
+
+function renderPurchases(){
+  const vendors = [...new Set(purchasesCache.map(p=>p.vendor))].sort();
+  $('pur-vendor-list').innerHTML = vendors.map(v=>`<option value="${v}"></option>`).join('');
+
+  const items = [...new Set(purchasesCache.map(p=>p.itemName))].sort();
+  const currentFilter = $('pur-compare-select').value;
+  $('pur-compare-select').innerHTML = `<option value="">All entries (newest first)</option>` +
+    items.map(name=> `<option value="${name}" ${name===currentFilter?'selected':''}>Compare prices: ${name}</option>`).join('');
+
+  if(purchasesCache.length===0){ $('purchases-list').innerHTML = `<div class="empty-state">Nothing logged yet for ${LOCATIONS[currentLocation]}.</div>`; return; }
+
+  const filter = $('pur-compare-select').value;
+  let list = purchasesCache;
+  let html = '';
+  if(filter){
+    list = list.filter(p=> p.itemName === filter).sort((a,b)=> a.unitPrice - b.unitPrice);
+    list.forEach((p,idx)=> html += purchaseCard(p, idx===0));
+  } else {
+    list = [...list].sort((a,b)=> (b.purchasedAt?.seconds||0) - (a.purchasedAt?.seconds||0));
+    list.forEach(p=> html += purchaseCard(p, false));
+  }
+  $('purchases-list').innerHTML = html;
+}
+function purchaseCard(p, isBest){
+  const isPriceCheck = p.entryType === 'price_check';
+  const typeTag = isPriceCheck ? `<span class="tag">Price check</span>` : `<span class="tag">Purchase</span>`;
+  const detailTag = isPriceCheck
+    ? `<span class="tag">$${p.unitPrice.toFixed(2)}/ea observed</span>`
+    : `<span class="tag">${p.quantity} @ $${p.unitPrice.toFixed(2)}/ea</span><span class="tag">$${p.totalPrice.toFixed(2)} total</span>`;
+  return `<div class="card ${isBest?'best-price':''}">
+    <div class="card-top">
+      <div>
+        <div class="card-title">${p.itemName}${isBest ? ' <span class="best-price-badge">Best price</span>' : ''}</div>
+        <div class="card-tags">${typeTag}<span class="tag">${p.vendor}</span><span class="tag">${p.date}</span>${detailTag}</div>
+      </div>
+      ${isAdmin ? `<button class="log-delete" onclick="deletePurchase('${p.id}')">Delete</button>` : ''}
+    </div>
+    ${p.notes ? `<div class="card-desc">${p.notes}</div>` : ''}
+    <div class="card-meta">
+      Logged by ${p.purchasedBy} · ${fmtDate(p.purchasedAt)}
+      ${p.receiptUrl ? ` · <a class="receipt-link" href="${p.receiptUrl}" target="_blank" rel="noopener">View link</a>` : ''}
+    </div>
+  </div>`;
+}
+window.deletePurchase = async function(id){
+  if(!confirm('Delete this entry? This does not change inventory counts.')) return;
+  try{
+    await db.collection('purchases').doc(id).delete();
+    showToast('Deleted.');
+  }catch(err){ console.error(err); showToast('Could not delete — try again.'); }
 };
 </script>
 </body>
