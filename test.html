@@ -9,57 +9,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#1C1B18;
-    --ink-soft:#4A473F;
-    --paper:#F3F1EC;
-    --panel:#FFFFFF;
-    --line:#DEDACF;
-    --amber:#C8802B;
-    --amber-deep:#9C611D;
-    --amber-wash:#F6E7D2;
-    --red:#A8402F;
-    --red-wash:#F5DFDA;
-    --green:#4C6B4F;
-    --green-wash:#DFEADD;
+    --ink:#1C1B18; --ink-soft:#4A473F; --paper:#F3F1EC; --panel:#FFFFFF; --line:#DEDACF;
+    --amber:#C8802B; --amber-deep:#9C611D; --amber-wash:#F6E7D2;
+    --red:#A8402F; --red-wash:#F5DFDA; --green:#4C6B4F; --green-wash:#DFEADD;
     --shadow: 0 1px 2px rgba(28,27,24,0.06), 0 2px 12px rgba(28,27,24,0.05);
-    --radius: 10px;
-    --heading-font: 'Fraunces', Georgia, serif;
-    --topbar-bg: #2B2A26;
+    --radius: 10px; --heading-font: 'Fraunces', Georgia, serif; --topbar-bg: #2B2A26;
   }
   body[data-theme="boxhop"]{
-    --ink:#211E1A;
-    --ink-soft:#5C5647;
-    --paper:#F7F2E7;
-    --panel:#FFFFFF;
-    --line:#E4DAC2;
-    --amber:#211E1A;
-    --amber-deep:#000000;
-    --amber-wash:#EDE3C8;
-    --red:#A8402F;
-    --red-wash:#F5DFDA;
-    --green:#4C6B4F;
-    --green-wash:#DFEADD;
-    --heading-font: 'Poppins', 'Work Sans', sans-serif;
-    --topbar-bg: #211E1A;
+    --ink:#211E1A; --ink-soft:#5C5647; --paper:#F7F2E7; --panel:#FFFFFF; --line:#E4DAC2;
+    --amber:#211E1A; --amber-deep:#000000; --amber-wash:#EDE3C8;
+    --heading-font: 'Poppins', 'Work Sans', sans-serif; --topbar-bg: #211E1A;
   }
   *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Work Sans', -apple-system, sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
-  h1,h2,h3,.display{
-    font-family:var(--heading-font);
-    font-weight:600;
-    letter-spacing:-0.01em;
-    margin:0;
-  }
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Work Sans', -apple-system, sans-serif;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.display{font-family:var(--heading-font);font-weight:600;letter-spacing:-0.01em;margin:0;}
   button{font-family:inherit;cursor:pointer;}
   input,select,textarea{font-family:inherit;font-size:15px;}
 
-  /* ---------- Login ---------- */
   #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
   .login-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:40px 36px;max-width:400px;width:100%;box-shadow:var(--shadow);}
   .login-card .display{font-size:32px;margin-bottom:4px;}
@@ -68,6 +34,7 @@
   .field label{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:6px;}
   .field input, .field select, .field textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);}
   .field input:focus, .field select:focus, .field textarea:focus{outline:2px solid var(--amber);outline-offset:1px;background:var(--panel);}
+  .field .hint{font-size:12px;color:var(--ink-soft);margin-top:4px;}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:8px;padding:11px 18px;font-size:14px;font-weight:600;transition:transform .05s ease;}
   .btn:active{transform:scale(0.98);}
   .btn-primary{background:var(--ink);color:#fff;width:100%;}
@@ -85,15 +52,13 @@
   .auth-panel{display:none;}
   .auth-panel.active{display:block;}
   .forgot-link{display:inline-block;margin-top:10px;font-size:13px;color:var(--ink-soft);text-decoration:underline;cursor:pointer;background:none;border:none;padding:0;}
-  .forgot-link:hover{color:var(--ink);}
   #auth-msg{font-size:13px;margin-top:12px;display:none;}
   #auth-msg.error{color:var(--red);}
   #auth-msg.success{color:var(--green);}
 
-  /* ---------- Location picker ---------- */
   #picker-screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;background:#EDE9DF;}
   .picker-wrap{max-width:720px;width:100%;text-align:center;}
-  .picker-wrap .display{font-size:26px;color:var(--ink);margin-bottom:6px;}
+  .picker-wrap .display{font-size:26px;margin-bottom:6px;}
   .picker-sub{color:var(--ink-soft);font-size:14.5px;margin-bottom:32px;}
   .picker-cards{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;}
   .picker-card{flex:1;min-width:260px;max-width:320px;border-radius:16px;padding:36px 24px;cursor:pointer;border:2px solid transparent;transition:transform .12s ease;box-shadow:var(--shadow);}
@@ -110,7 +75,6 @@
   .switch-side{background:transparent;border:1px solid #56534A;color:#EDEAE0;border-radius:8px;padding:7px 12px;font-size:13px;}
   .switch-side:hover{background:#2A2924;}
 
-  /* ---------- App shell ---------- */
   #app{display:none;}
   header.topbar{background:var(--topbar-bg);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
   .brand{display:flex;align-items:baseline;gap:10px;}
@@ -132,19 +96,18 @@
   .section-head h2{font-size:22px;}
   .muted{color:var(--ink-soft);font-size:13.5px;}
 
-  .alert-banner{background:var(--red-wash);border:1px solid #E2B5AC;color:#7A2E21;border-radius:var(--radius);padding:14px 16px;margin-bottom:20px;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .alert-banner{background:var(--red-wash);border:1px solid #E2B5AC;color:#7A2E21;border-radius:var(--radius);padding:14px 16px;margin-bottom:20px;font-size:14px;}
   .alert-banner strong{font-weight:700;}
 
   .inv-toolbar{display:flex;align-items:center;gap:14px;margin-bottom:16px;flex-wrap:wrap;}
   .inv-toolbar input[type="text"]{flex:1;min-width:180px;padding:10px 14px;border:1px solid var(--line);border-radius:20px;background:var(--panel);font-size:14px;}
-  .inv-toolbar input[type="text"]:focus{outline:2px solid var(--amber);outline-offset:1px;}
   .low-only-toggle{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-soft);white-space:nowrap;}
   .low-only-toggle input{width:16px;height:16px;}
 
   .cat-group{margin-bottom:18px;}
   .cat-title{font-size:13.5px;font-weight:700;letter-spacing:0.01em;color:var(--ink-soft);padding:10px 4px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;user-select:none;}
   .cat-title:hover{color:var(--ink);}
-  .cat-title .cat-left{display:flex;align-items:center;gap:8px;}
+  .cat-left{display:flex;align-items:center;gap:8px;}
   .cat-chevron{transition:transform .15s ease;font-size:11px;color:var(--ink-soft);}
   .cat-group.collapsed .cat-chevron{transform:rotate(-90deg);}
   .cat-group.collapsed .cat-items{display:none;}
@@ -171,7 +134,7 @@
   .tag{font-size:11.5px;padding:2px 8px;border-radius:20px;background:var(--paper);border:1px solid var(--line);color:var(--ink-soft);}
   .tag-urgent{background:var(--red-wash);color:var(--red);border-color:transparent;}
   .card-meta{font-size:12px;color:var(--ink-soft);margin-top:10px;}
-  .card-desc{font-size:14px;margin-top:8px;color:var(--ink);}
+  .card-desc{font-size:14px;margin-top:8px;color:var(--ink);white-space:pre-line;}
   .card-actions{display:flex;gap:6px;flex-wrap:wrap;}
   .section-sub{font-size:12.5px;font-weight:700;color:var(--ink-soft);letter-spacing:0.02em;margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);}
 
@@ -194,17 +157,32 @@
 
   .seed-box{border:1px dashed var(--amber);background:var(--amber-wash);border-radius:var(--radius);padding:16px;margin-bottom:20px;font-size:14px;}
 
-  .activity-row{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;}
-  .activity-row:last-child{border-bottom:none;}
-  .activity-kind{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;margin-top:1px;}
+  /* Damage log */
+  .search-wrap{position:relative;}
+  .search-results{border:1px solid var(--line);border-radius:8px;background:var(--panel);margin-top:4px;max-height:220px;overflow-y:auto;box-shadow:var(--shadow);}
+  .search-result-row{padding:9px 12px;font-size:13.5px;cursor:pointer;border-bottom:1px solid var(--line);}
+  .search-result-row:last-child{border-bottom:none;}
+  .search-result-row:hover{background:var(--amber-wash);}
+  .search-result-cat{color:var(--ink-soft);font-size:11.5px;}
+  .selected-item-chip{display:inline-flex;align-items:center;gap:8px;background:var(--amber-wash);color:var(--amber-deep);padding:6px 12px;border-radius:20px;font-size:13px;font-weight:600;margin-top:6px;}
+  .selected-item-chip button{background:none;border:none;color:inherit;font-weight:700;cursor:pointer;padding:0;}
+
+  .month-sep{font-size:12.5px;font-weight:700;color:var(--ink-soft);letter-spacing:0.03em;margin:20px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--line);}
+  .log-row{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px;}
+  .log-row:last-child{border-bottom:none;}
+  .log-kind{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;margin-top:1px;}
   .kind-used{background:var(--amber-wash);color:var(--amber-deep);}
   .kind-broken{background:var(--red-wash);color:var(--red);}
-  .kind-restock{background:var(--green-wash);color:var(--green);}
-  .kind-other{background:var(--paper);color:var(--ink-soft);border:1px solid var(--line);}
-  .activity-body{flex:1;}
-  .activity-meta{color:var(--ink-soft);font-size:12px;margin-top:2px;}
+  .log-body{flex:1;}
+  .log-meta{color:var(--ink-soft);font-size:12px;margin-top:2px;}
+  .log-delete{background:none;border:none;color:var(--ink-soft);font-size:12px;cursor:pointer;text-decoration:underline;padding:0;}
+  .log-delete:hover{color:var(--red);}
 
-  .name-required-note{font-size:12.5px;color:var(--ink-soft);margin-top:-8px;margin-bottom:14px;}
+  /* Messages */
+  .msg-filter{margin-bottom:16px;}
+  .msg-filter select{padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:13.5px;}
+  .meeting-fields{border-top:1px dashed var(--line);margin-top:14px;padding-top:14px;}
+  .meeting-note{font-size:12.5px;color:var(--ink-soft);margin-bottom:12px;}
 
   @media (max-width:640px){
     header.topbar{padding:10px 14px;gap:8px;}
@@ -230,12 +208,10 @@
   <div class="login-card">
     <div class="display">Backstage</div>
     <div class="login-sub">Inventory &amp; maintenance for The Seventy Five and The Box Hop.</div>
-
     <div class="auth-tabs">
       <button type="button" data-panel="login" class="active">Log in</button>
       <button type="button" data-panel="signup">Create account</button>
     </div>
-
     <div class="auth-panel active" id="panel-login">
       <form id="login-form">
         <div class="field"><label for="login-email">Email</label><input type="email" id="login-email" required autocomplete="username"></div>
@@ -244,19 +220,15 @@
       </form>
       <button type="button" class="forgot-link" id="forgot-link">Forgot your password?</button>
     </div>
-
     <div class="auth-panel" id="panel-signup">
       <form id="signup-form">
-        <div class="field"><label for="signup-name">Your name</label>
-          <input type="text" id="signup-name" required placeholder="e.g. Jess K.">
-        </div>
+        <div class="field"><label for="signup-name">Your name</label><input type="text" id="signup-name" required placeholder="e.g. Jess K."></div>
         <div class="field"><label for="signup-email">Email</label><input type="email" id="signup-email" required autocomplete="username"></div>
         <div class="field"><label for="signup-password">Password</label><input type="password" id="signup-password" required autocomplete="new-password" minlength="6"></div>
         <div class="field"><label for="signup-code">Staff code</label><input type="text" id="signup-code" required placeholder="Ask your manager"></div>
         <button type="submit" class="btn btn-primary">Create account</button>
       </form>
     </div>
-
     <div class="auth-panel" id="panel-reset">
       <div class="login-sub" style="margin-bottom:16px;">Enter your email and we'll send a reset link.</div>
       <form id="reset-form">
@@ -265,12 +237,10 @@
       </form>
       <button type="button" class="forgot-link" id="back-to-login">Back to log in</button>
     </div>
-
     <div id="auth-msg"></div>
   </div>
 </div>
 
-<!-- ========== NAME PROMPT (for accounts created before names existed) ========== -->
 <div class="modal-backdrop" id="name-backdrop">
   <div class="modal">
     <h3>What's your name?</h3>
@@ -280,7 +250,6 @@
   </div>
 </div>
 
-<!-- ========== LOCATION PICKER ========== -->
 <div id="picker-screen">
   <div class="picker-wrap">
     <div class="display">Where are you working today?</div>
@@ -302,10 +271,7 @@
 <!-- ========== APP ========== -->
 <div id="app">
   <header class="topbar">
-    <div class="brand">
-      <span class="display">Backstage</span>
-      <span class="tag" id="location-tag">The Seventy Five</span>
-    </div>
+    <div class="brand"><span class="display">Backstage</span><span class="tag" id="location-tag">The Seventy Five</span></div>
     <div class="topbar-right">
       <button class="switch-side" id="switch-side-btn">Switch side</button>
       <span class="who" id="who-label"></span>
@@ -324,12 +290,9 @@
 
   <main>
 
-    <!-- ---- TOTAL INVENTORY TAB ---- -->
+    <!-- ---- TOTAL INVENTORY ---- -->
     <div id="tab-inventory">
-      <div class="section-head">
-        <h2>Total Inventory</h2>
-        <div id="inv-admin-actions"></div>
-      </div>
+      <div class="section-head"><h2>Total Inventory</h2><div id="inv-admin-actions"></div></div>
       <div id="low-stock-alert"></div>
       <div id="seed-area"></div>
       <div class="inv-toolbar">
@@ -339,14 +302,35 @@
       <div id="inventory-list"></div>
     </div>
 
-    <!-- ---- BROKEN/DAMAGE LOG TAB ---- -->
+    <!-- ---- BROKEN/DAMAGE LOG ---- -->
     <div id="tab-damagelog" style="display:none;">
       <div class="section-head"><h2>Broken/Damage Log</h2></div>
-      <div class="muted" style="margin-bottom:14px;">Every use, breakage, and restock logged against inventory — newest first. Logging here updates the live counts on Total Inventory automatically.</div>
+      <div class="muted" style="margin-bottom:14px;">Logging here updates the live count on Total Inventory. Entries never auto-delete.</div>
+
+      <div class="fab-form">
+        <h3>Log a used or broken item</h3>
+        <div class="field">
+          <label>Item</label>
+          <div class="search-wrap">
+            <input type="text" id="dmg-item-search" placeholder="Search inventory…" autocomplete="off">
+            <div class="search-results" id="dmg-item-results" style="display:none;"></div>
+          </div>
+          <div id="dmg-selected-chip"></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label>Type</label>
+            <select id="dmg-type"><option value="broken">Broken / damaged</option><option value="used">Used</option></select>
+          </div>
+          <div class="field"><label>Quantity</label><input type="number" id="dmg-qty" min="1" value="1"></div>
+        </div>
+        <div class="field"><label>Event <span class="muted">(optional)</span></label><input type="text" id="dmg-event" placeholder="e.g. Britt Wedding"></div>
+        <button type="button" class="btn btn-amber" id="dmg-submit">Add to log</button>
+      </div>
+
       <div id="damagelog-list"></div>
     </div>
 
-    <!-- ---- MAINTENANCE TAB ---- -->
+    <!-- ---- MAINTENANCE ---- -->
     <div id="tab-maintenance" style="display:none;">
       <div class="section-head"><h2>Maintenance</h2></div>
       <div class="fab-form">
@@ -355,18 +339,10 @@
           <div class="form-row">
             <div class="field"><label>Category</label><select id="maint-category"></select></div>
             <div class="field"><label>Priority</label>
-              <select id="maint-priority" required>
-                <option>Urgent — can't run an event</option>
-                <option>Soon</option>
-                <option>Whenever</option>
-              </select>
+              <select id="maint-priority" required><option>Urgent — can't run an event</option><option>Soon</option><option>Whenever</option></select>
             </div>
             <div class="field"><label>Who handles it</label>
-              <select id="maint-handler" required>
-                <option>In-house team</option>
-                <option>Outside vendor</option>
-                <option>Not sure</option>
-              </select>
+              <select id="maint-handler" required><option>In-house team</option><option>Outside vendor</option><option>Not sure</option></select>
             </div>
           </div>
           <div class="field"><label>What's going on</label><textarea id="maint-description" rows="2" required placeholder="e.g. AC in the bridal suite isn't cooling"></textarea></div>
@@ -376,23 +352,21 @@
       <div id="maintenance-list"></div>
     </div>
 
-    <!-- ---- EVENT REQUESTS TAB ---- -->
+    <!-- ---- EVENT REQUESTS ---- -->
     <div id="tab-requests" style="display:none;">
       <div class="section-head"><h2>Event Requests</h2></div>
       <div class="fab-form">
         <h3>Request an item</h3>
         <form id="request-form">
           <div class="field"><label>What's needed</label><textarea id="req-description" rows="2" required placeholder="e.g. Need the large wooden cross for Saturday's wedding"></textarea></div>
-          <div class="form-row">
-            <div class="field"><label>Event / stay date <span class="muted">(optional)</span></label><input type="date" id="req-date"></div>
-          </div>
+          <div class="form-row"><div class="field"><label>Event / stay date <span class="muted">(optional)</span></label><input type="date" id="req-date"></div></div>
           <button type="submit" class="btn btn-amber">Submit request</button>
         </form>
       </div>
       <div id="requests-list"></div>
     </div>
 
-    <!-- ---- VENUE WISHLIST TAB ---- -->
+    <!-- ---- VENUE WISHLIST ---- -->
     <div id="tab-wishlist" style="display:none;">
       <div class="section-head"><h2>Venue Wishlist</h2></div>
       <div class="fab-form">
@@ -405,25 +379,50 @@
       <div id="wishlist-list"></div>
     </div>
 
-    <!-- ---- MESSAGE TO MANAGEMENT TAB ---- -->
+    <!-- ---- MESSAGE TO MANAGEMENT ---- -->
     <div id="tab-messages" style="display:none;">
       <div class="section-head"><h2>Message to Management</h2></div>
-      <div class="muted" style="margin-bottom:14px;">Only management can see these — not other staff. Use this for a complaint, suggestion, call-out, or to request a one-on-one.</div>
+      <div class="muted" style="margin-bottom:14px;" id="messages-sub"></div>
       <div class="fab-form">
         <h3>Send a message</h3>
         <form id="message-form">
-          <div class="field"><label>Type</label>
-            <select id="msg-type" required>
-              <option>Suggestion</option>
-              <option>Complaint</option>
-              <option>Call-out</option>
-              <option>Meeting request</option>
-            </select>
+          <div class="form-row">
+            <div class="field"><label>Send to</label>
+              <select id="msg-recipient" required>
+                <option value="Jess">Jess</option>
+                <option value="Emily">Emily</option>
+                <option value="Seth">Seth</option>
+                <option value="All">All management</option>
+              </select>
+            </div>
+            <div class="field"><label>Type</label>
+              <select id="msg-type" required>
+                <option>Suggestion</option>
+                <option>Complaint</option>
+                <option>Call-out</option>
+                <option>Meeting request</option>
+              </select>
+            </div>
           </div>
-          <div class="field"><label>Message</label><textarea id="msg-body" rows="4" required placeholder="Say as much or as little as you want."></textarea></div>
+          <div class="field"><label id="msg-body-label">Message</label><textarea id="msg-body" rows="4" required></textarea></div>
+
+          <div class="meeting-fields" id="meeting-fields" style="display:none;">
+            <div class="meeting-note">This will be a 30-minute meeting. Give at least three options, each at least 24 hours from now.</div>
+            <div class="field"><label>Format</label>
+              <select id="mtg-format"><option>In-person</option><option>Virtual call</option><option>Phone call</option></select>
+            </div>
+            <div class="field"><label>Who do you want present</label><input type="text" id="mtg-attendees" placeholder="e.g. Jess, Emily"></div>
+            <div class="field"><label>Option 1</label><input type="datetime-local" id="mtg-time1"></div>
+            <div class="field"><label>Option 2</label><input type="datetime-local" id="mtg-time2"></div>
+            <div class="field"><label>Option 3</label><input type="datetime-local" id="mtg-time3"></div>
+          </div>
+
           <button type="submit" class="btn btn-amber">Send securely</button>
         </form>
       </div>
+      <div class="msg-filter"><select id="msg-type-filter">
+        <option value="">All types</option><option>Suggestion</option><option>Complaint</option><option>Call-out</option><option>Meeting request</option>
+      </select></div>
       <div id="messages-list"></div>
     </div>
 
@@ -439,22 +438,6 @@
     <div class="modal-actions">
       <button class="btn btn-ghost" id="restock-cancel">Cancel</button>
       <button class="btn btn-amber" id="restock-save">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- ---- LOG USAGE MODAL ---- -->
-<div class="modal-backdrop" id="log-backdrop">
-  <div class="modal">
-    <h3 id="log-title">Log usage</h3>
-    <div class="field"><label>Type</label>
-      <select id="log-type"><option value="used">Used</option><option value="broken">Broken / damaged</option></select>
-    </div>
-    <div class="field"><label>How many</label><input type="number" id="log-qty" min="1" value="1"></div>
-    <div class="field"><label>Note <span class="muted">(optional — e.g. which event)</span></label><input type="text" id="log-note"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" id="log-cancel">Cancel</button>
-      <button class="btn btn-amber" id="log-save">Save</button>
     </div>
   </div>
 </div>
@@ -476,7 +459,7 @@
   </div>
 </div>
 
-<!-- ---- DELETE PIN MODAL ---- -->
+<!-- ---- DELETE PIN MODAL (items) ---- -->
 <div class="modal-backdrop" id="delete-backdrop">
   <div class="modal">
     <h3 id="delete-title">Delete item</h3>
@@ -491,15 +474,12 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
-/* ============================================================
-   CONFIG
-   ============================================================ */
+/* ============================================================ CONFIG ============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyDrgmlIDHqITf9sEoTHWl_N_IAnov3Wq8A",
   authDomain: "backstage-ops.firebaseapp.com",
@@ -512,24 +492,28 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-const ADMIN_EMAILS = [
-  "events@theseventyfivevenue.com",
-  "stay@theboxhop.com",
-  "emily@theboxhop.com",
-  "seth@theboxhop.com",
-  "jess@theseventyfivevenue.com"
-];
+const ADMIN_EMAILS = ["events@theseventyfivevenue.com","stay@theboxhop.com","emily@theboxhop.com","seth@theboxhop.com","jess@theseventyfivevenue.com"];
 const DELETE_PIN = "2023";
 const RESOLVED_VISIBLE_DAYS = 30;
-
 const LOCATIONS = { the75: "The Seventy Five", boxhop: "The Box Hop" };
 const INVENTORY_CATEGORIES = ["BAR","KITCHEN","BRIDE SUITE","GROOM SUITE","BATHROOMS","EQUIPMENT","OFFICE SUPPLIES","CLEANING SUPPLIES","DECORATIONS"];
 const MAINTENANCE_CATEGORIES = ["HVAC","Plumbing","Electrical","Grounds/Landscaping","Structural","Equipment/AV","General Repair"];
 const PRIORITY_RANK = { "Urgent — can't run an event": 0, "Soon": 1, "Whenever": 2 };
 
-/* Seed data pulled from Jess's 2026 inventory spreadsheet (The Seventy Five only).
-   Bride Suite / Groom Suite split out from the original combined category —
-   shared items (BS/GS) are duplicated into both, starting at 0. */
+const RECIPIENT_MAP = {
+  "Jess": ["jess@theseventyfivevenue.com"],
+  "Emily": ["emily@theboxhop.com"],
+  "Seth": ["seth@theboxhop.com"],
+  "All": ADMIN_EMAILS.slice()
+};
+const RECIPIENT_NAME = { "jess@theseventyfivevenue.com":"Jess", "emily@theboxhop.com":"Emily", "seth@theboxhop.com":"Seth" };
+const TYPE_PLACEHOLDERS = {
+  "Suggestion": "Suggest an improvement to grounds or operations. This isn't a guaranteed request, just an idea worth raising.",
+  "Complaint": "Stick to the facts — describe what happened, whether it's internal or involves a vendor.",
+  "Call-out": "Give a shoutout — something a team member did that deserves recognition.",
+  "Meeting request": "Anything you'd like management to know ahead of time (optional)."
+};
+
 const SEED_ITEMS = [
   { category: 'BAR', name: 'Champagne Flutes | The 75\'s', count: 233 },
   { category: 'BAR', name: 'Bridal Champagne Flutes | Anne\'s', count: 46 },
@@ -760,51 +744,24 @@ const SEED_ITEMS = [
   { category: 'DECORATIONS', name: 'Grecian Pillars', count: 4 },
 ];
 
-/* ============================================================
-   STATE
-   ============================================================ */
-let currentUser = null;
-let isAdmin = false;
-let currentLocation = 'the75';
-let currentTab = 'inventory';
-let itemsCache = [], maintenanceCache = [], requestsCache = [], wishlistCache = [], messagesCache = [], activityCache = [];
-let unsubItems=null, unsubMaint=null, unsubReq=null, unsubWish=null, unsubMsg=null, unsubActivity=null;
-let logTargetItem = null, restockTargetItem = null, deleteTargetItem = null;
+/* ============================================================ STATE ============================================================ */
+let currentUser = null, isAdmin = false, currentLocation = 'the75', currentTab = 'inventory', appInited = false;
+let itemsCache = [], maintenanceCache = [], requestsCache = [], wishlistCache = [], messagesCache = [], damagelogCache = [];
+let unsubItems=null, unsubMaint=null, unsubReq=null, unsubWish=null, unsubMsg=null, unsubDamage=null;
+let restockTargetItem = null, deleteTargetItem = null, selectedDamageItem = null;
 let categoryCollapsed = {};
-let invSearchTerm = '', invLowOnly = false;
-let appInited = false;
+let invSearchTerm = '', invLowOnly = false, msgTypeFilter = '';
 
 const $ = (id) => document.getElementById(id);
-function showToast(msg){
-  const t = $('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2200);
-}
-function fmtDate(ts){
-  if(!ts) return '';
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
-  return d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}) + ' ' +
-         d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
-}
-function daysSince(ts){
-  if(!ts) return Infinity;
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
-  return (Date.now() - d.getTime()) / (1000*60*60*24);
-}
-function whoAmI(){
-  return (currentUser && (currentUser.displayName || currentUser.email)) || 'Unknown';
-}
+function showToast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+function fmtDate(ts){ if(!ts) return ''; const d=ts.toDate?ts.toDate():new Date(ts); return d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); }
+function monthYearLabel(ts){ if(!ts) return ''; const d=ts.toDate?ts.toDate():new Date(ts); return d.toLocaleDateString(undefined,{month:'long',year:'numeric'}); }
+function daysSince(ts){ if(!ts) return Infinity; const d=ts.toDate?ts.toDate():new Date(ts); return (Date.now()-d.getTime())/(1000*60*60*24); }
+function whoAmI(){ return (currentUser && (currentUser.displayName || currentUser.email)) || 'Unknown'; }
 
-/* ============================================================
-   AUTH
-   ============================================================ */
+/* ============================================================ AUTH ============================================================ */
 const STAFF_SIGNUP_CODE = "backstage75";
-
-function showAuthMsg(text, type){
-  const el = $('auth-msg');
-  el.textContent = text; el.className = type; el.style.display = 'block';
-}
+function showAuthMsg(text,type){ const el=$('auth-msg'); el.textContent=text; el.className=type; el.style.display='block'; }
 document.querySelectorAll('.auth-tabs button').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('.auth-tabs button').forEach(b=>b.classList.remove('active'));
@@ -817,8 +774,7 @@ document.querySelectorAll('.auth-tabs button').forEach(btn=>{
 $('forgot-link').addEventListener('click', ()=>{
   document.querySelectorAll('.auth-tabs button').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.auth-panel').forEach(p=>p.classList.remove('active'));
-  $('panel-reset').classList.add('active');
-  $('auth-msg').style.display='none';
+  $('panel-reset').classList.add('active'); $('auth-msg').style.display='none';
 });
 $('back-to-login').addEventListener('click', ()=>{
   document.querySelectorAll('.auth-panel').forEach(p=>p.classList.remove('active'));
@@ -826,672 +782,518 @@ $('back-to-login').addEventListener('click', ()=>{
   document.querySelectorAll('.auth-tabs button').forEach(b=> b.classList.toggle('active', b.dataset.panel==='login'));
   $('auth-msg').style.display='none';
 });
-
 $('login-form').addEventListener('submit', (e)=>{
   e.preventDefault();
-  const email = $('login-email').value.trim();
-  const pw = $('login-password').value;
-  $('auth-msg').style.display = 'none';
-  auth.signInWithEmailAndPassword(email, pw).catch(err=> showAuthMsg(err.message, 'error'));
+  auth.signInWithEmailAndPassword($('login-email').value.trim(), $('login-password').value)
+    .catch(err=> showAuthMsg(err.message,'error'));
 });
-
 $('signup-form').addEventListener('submit', (e)=>{
   e.preventDefault();
-  const name = $('signup-name').value.trim();
-  const email = $('signup-email').value.trim();
-  const pw = $('signup-password').value;
-  const code = $('signup-code').value.trim();
-  $('auth-msg').style.display = 'none';
-  if(code !== STAFF_SIGNUP_CODE){
-    showAuthMsg("That staff code isn't right — check with your manager.", 'error');
-    return;
-  }
-  auth.createUserWithEmailAndPassword(email, pw).then(cred=>{
-    return cred.user.updateProfile({ displayName: name });
-  }).catch(err=> showAuthMsg(err.message, 'error'));
+  const name=$('signup-name').value.trim(), email=$('signup-email').value.trim(), pw=$('signup-password').value, code=$('signup-code').value.trim();
+  if(code !== STAFF_SIGNUP_CODE){ showAuthMsg("That staff code isn't right — check with your manager.",'error'); return; }
+  auth.createUserWithEmailAndPassword(email,pw).then(cred=> cred.user.updateProfile({displayName:name}))
+    .catch(err=> showAuthMsg(err.message,'error'));
 });
-
 $('reset-form').addEventListener('submit', (e)=>{
   e.preventDefault();
-  const email = $('reset-email').value.trim();
-  $('auth-msg').style.display = 'none';
-  auth.sendPasswordResetEmail(email).then(()=>{
-    showAuthMsg('Reset link sent — check that inbox.', 'success');
-  }).catch(err=> showAuthMsg(err.message, 'error'));
+  auth.sendPasswordResetEmail($('reset-email').value.trim()).then(()=> showAuthMsg('Reset link sent — check that inbox.','success'))
+    .catch(err=> showAuthMsg(err.message,'error'));
 });
-
 $('signout-btn').addEventListener('click', ()=> auth.signOut());
 $('picker-signout').addEventListener('click', ()=> auth.signOut());
-$('switch-side-btn').addEventListener('click', ()=>{
-  $('app').style.display = 'none';
-  $('picker-screen').style.display = 'flex';
-});
+$('switch-side-btn').addEventListener('click', ()=>{ $('app').style.display='none'; $('picker-screen').style.display='flex'; });
 document.querySelectorAll('.picker-card').forEach(card=>{
-  card.addEventListener('click', ()=>{
-    $('picker-screen').style.display = 'none';
-    $('app').style.display = 'block';
-    setLocation(card.dataset.loc);
-  });
+  card.addEventListener('click', ()=>{ $('picker-screen').style.display='none'; $('app').style.display='block'; setLocation(card.dataset.loc); });
 });
-
 $('name-save').addEventListener('click', async ()=>{
-  const name = $('name-input').value.trim();
-  if(!name) return;
-  await currentUser.updateProfile({ displayName: name });
-  $('name-backdrop').classList.remove('open');
-  refreshWhoLabel();
+  const name = $('name-input').value.trim(); if(!name) return;
+  await currentUser.updateProfile({displayName:name});
+  $('name-backdrop').classList.remove('open'); refreshWhoLabel();
 });
-
-function refreshWhoLabel(){
-  $('who-label').innerHTML = whoAmI() + (isAdmin ? '<span class="admin-pill">Admin</span>' : '');
-}
+function refreshWhoLabel(){ $('who-label').innerHTML = whoAmI() + (isAdmin?'<span class="admin-pill">Admin</span>':''); }
 
 auth.onAuthStateChanged(user=>{
   currentUser = user;
   if(user){
     isAdmin = ADMIN_EMAILS.includes(user.email);
-    $('login-screen').style.display = 'none';
-    refreshWhoLabel();
-    initApp();
-    if(!user.displayName){
-      $('name-backdrop').classList.add('open');
-    }
-    $('picker-screen').style.display = 'flex';
-    $('app').style.display = 'none';
+    $('login-screen').style.display='none';
+    refreshWhoLabel(); initApp();
+    if(!user.displayName) $('name-backdrop').classList.add('open');
+    $('picker-screen').style.display='flex'; $('app').style.display='none';
   } else {
-    $('login-screen').style.display = 'flex';
-    $('picker-screen').style.display = 'none';
-    $('app').style.display = 'none';
-    [unsubItems,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubActivity].forEach(u=> u && u());
+    $('login-screen').style.display='flex'; $('picker-screen').style.display='none'; $('app').style.display='none';
+    [unsubItems,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage].forEach(u=>u&&u());
   }
 });
 
-/* ============================================================
-   INIT / TABS / LOCATION
-   ============================================================ */
+/* ============================================================ INIT / TABS / LOCATION ============================================================ */
 function initApp(){
-  if(appInited) return;
-  appInited = true;
+  if(appInited) return; appInited = true;
   populateSelect($('maint-category'), MAINTENANCE_CATEGORIES);
   populateSelect($('add-category'), INVENTORY_CATEGORIES);
-  document.querySelectorAll('nav.tabs button').forEach(btn=>{
-    btn.addEventListener('click', ()=> setTab(btn.dataset.tab));
-  });
+  document.querySelectorAll('nav.tabs button').forEach(btn=> btn.addEventListener('click', ()=> setTab(btn.dataset.tab)));
 }
 function populateSelect(sel, arr){ sel.innerHTML = arr.map(v=>`<option value="${v}">${v}</option>`).join(''); }
 
 function setTab(tab){
   currentTab = tab;
   document.querySelectorAll('nav.tabs button').forEach(b=> b.classList.toggle('active', b.dataset.tab===tab));
-  ['inventory','damagelog','maintenance','requests','wishlist','messages'].forEach(t=>{
-    $('tab-'+t).style.display = (t===tab) ? 'block':'none';
-  });
+  ['inventory','damagelog','maintenance','requests','wishlist','messages'].forEach(t=>{ $('tab-'+t).style.display = (t===tab)?'block':'none'; });
   if(tab==='damagelog') renderDamageLog();
-  if(tab==='messages') subscribeMessages();
+  if(tab==='messages') renderMessages();
 }
-
 function setLocation(loc){
   currentLocation = loc;
-  document.body.setAttribute('data-theme', loc === 'boxhop' ? 'boxhop' : 'the75');
+  document.body.setAttribute('data-theme', loc==='boxhop'?'boxhop':'the75');
   $('location-tag').textContent = LOCATIONS[loc];
-  invSearchTerm = ''; invLowOnly = false;
-  $('inv-search').value = ''; $('inv-low-only').checked = false;
+  invSearchTerm=''; invLowOnly=false; $('inv-search').value=''; $('inv-low-only').checked=false;
   categoryCollapsed = {};
+  clearDamageSelection();
   setTab('inventory');
   subscribeAll();
 }
 
-/* ============================================================
-   FIRESTORE SUBSCRIPTIONS
-   ============================================================ */
+/* ============================================================ FIRESTORE SUBSCRIPTIONS ============================================================ */
 function subscribeAll(){
-  [unsubItems,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubActivity].forEach(u=> u && u());
+  [unsubItems,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage].forEach(u=>u&&u());
 
   unsubItems = db.collection('items').where('location','==',currentLocation)
-    .onSnapshot(snap=>{ itemsCache = snap.docs.map(d=>({id:d.id, ...d.data()})); renderInventory(); }, err=>console.error(err));
+    .onSnapshot(snap=>{ itemsCache = snap.docs.map(d=>({id:d.id, ...d.data()})); renderInventory(); }, e=>console.error(e));
 
   unsubMaint = db.collection('maintenance').where('location','==',currentLocation)
-    .onSnapshot(snap=>{ maintenanceCache = snap.docs.map(d=>({id:d.id, ...d.data()})); renderMaintenance(); }, err=>console.error(err));
+    .onSnapshot(snap=>{ maintenanceCache = snap.docs.map(d=>({id:d.id, ...d.data()})); renderMaintenance(); }, e=>console.error(e));
 
   unsubReq = db.collection('requests').where('location','==',currentLocation)
-    .onSnapshot(snap=>{ requestsCache = snap.docs.map(d=>({id:d.id, ...d.data()})); renderRequests(); }, err=>console.error(err));
+    .onSnapshot(snap=>{ requestsCache = snap.docs.map(d=>({id:d.id, ...d.data()})); renderRequests(); }, e=>console.error(e));
 
   unsubWish = db.collection('wishlist').where('location','==',currentLocation)
-    .onSnapshot(snap=>{ wishlistCache = snap.docs.map(d=>({id:d.id, ...d.data()})); renderWishlist(); }, err=>console.error(err));
+    .onSnapshot(snap=>{ wishlistCache = snap.docs.map(d=>({id:d.id, ...d.data()})); renderWishlist(); }, e=>console.error(e));
 
-  unsubActivity = db.collection('activity').where('location','==',currentLocation)
+  unsubDamage = db.collection('damagelog').where('location','==',currentLocation)
     .onSnapshot(snap=>{
-      activityCache = snap.docs.map(d=>({id:d.id, ...d.data()}))
-        .sort((a,b)=> (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0)).slice(0,150);
+      damagelogCache = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(b.timestamp?.seconds||0)-(a.timestamp?.seconds||0));
       if(currentTab==='damagelog') renderDamageLog();
-    }, err=>console.error(err));
+    }, e=>console.error(e));
 
   subscribeMessages();
-}
-function logActivity(type, summary){
-  db.collection('activity').add({
-    location: currentLocation, type, summary,
-    staffName: whoAmI(),
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  }).catch(()=>{});
 }
 function subscribeMessages(){
   if(unsubMsg) unsubMsg();
   let q = db.collection('messages').where('location','==',currentLocation);
-  if(!isAdmin) q = q.where('submittedByEmail','==', currentUser.email);
+  q = isAdmin ? q.where('recipients','array-contains',currentUser.email) : q.where('submittedByEmail','==',currentUser.email);
   unsubMsg = q.onSnapshot(snap=>{
-    messagesCache = snap.docs.map(d=>({id:d.id, ...d.data()}))
-      .sort((a,b)=> (b.submittedAt?.seconds||0) - (a.submittedAt?.seconds||0));
+    messagesCache = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(b.submittedAt?.seconds||0)-(a.submittedAt?.seconds||0));
     if(currentTab==='messages') renderMessages();
-  }, err=>console.error(err));
+  }, e=>console.error(e));
 }
 
-/* ============================================================
-   INVENTORY
-   ============================================================ */
-function itemStatus(item){
-  const thresh = item.threshold ?? 0;
-  if(item.count <= 0) return 'out';
-  if(item.count <= thresh) return 'low';
-  return 'ok';
-}
+/* ============================================================ INVENTORY ============================================================ */
+function itemStatus(item){ const t=item.threshold??0; if(item.count<=0) return 'out'; if(item.count<=t) return 'low'; return 'ok'; }
 const STATUS_RANK = { out:0, low:1, ok:2 };
 
 function renderInventory(){
   $('inv-admin-actions').innerHTML = isAdmin ? `<button class="btn btn-ghost btn-sm" id="add-item-btn">+ Add item</button>` : '';
   if(isAdmin) $('add-item-btn').addEventListener('click', ()=> $('add-backdrop').classList.add('open'));
 
-  const flagged = itemsCache.filter(i=> itemStatus(i) !== 'ok');
+  const flagged = itemsCache.filter(i=> itemStatus(i)!=='ok');
   $('low-stock-alert').innerHTML = flagged.length
-    ? `<div class="alert-banner"><span><strong>${flagged.length} item${flagged.length===1?'':'s'}</strong> low or out at ${LOCATIONS[currentLocation]}.</span></div>`
-    : '';
+    ? `<div class="alert-banner"><strong>${flagged.length} item${flagged.length===1?'':'s'}</strong> low or out at ${LOCATIONS[currentLocation]}.</div>` : '';
 
   if(isAdmin && currentLocation==='the75' && itemsCache.length===0){
-    $('seed-area').innerHTML = `
-      <div class="seed-box">
-        <strong>No items yet for The Seventy Five.</strong>
-        Import the ${SEED_ITEMS.length} items and last known counts from the 2026 inventory spreadsheet to get started.
-        <div style="margin-top:10px;"><button class="btn btn-amber btn-sm" id="seed-btn">Import starter inventory</button></div>
-      </div>`;
+    $('seed-area').innerHTML = `<div class="seed-box"><strong>No items yet for The Seventy Five.</strong> Import the ${SEED_ITEMS.length} items and last known counts from the 2026 inventory spreadsheet to get started.
+      <div style="margin-top:10px;"><button class="btn btn-amber btn-sm" id="seed-btn">Import starter inventory</button></div></div>`;
     $('seed-btn').addEventListener('click', seedInventory);
-  } else {
-    $('seed-area').innerHTML = '';
-  }
+  } else { $('seed-area').innerHTML = ''; }
 
-  if(itemsCache.length===0){
-    $('inventory-list').innerHTML = `<div class="empty-state">No items logged yet for ${LOCATIONS[currentLocation]}.</div>`;
-    return;
-  }
+  if(itemsCache.length===0){ $('inventory-list').innerHTML = `<div class="empty-state">No items logged yet for ${LOCATIONS[currentLocation]}.</div>`; return; }
 
   const term = invSearchTerm.trim().toLowerCase();
   let visible = itemsCache;
   if(term) visible = visible.filter(i=> i.name.toLowerCase().includes(term));
-  if(invLowOnly) visible = visible.filter(i=> itemStatus(i) !== 'ok');
+  if(invLowOnly) visible = visible.filter(i=> itemStatus(i)!=='ok');
+  if(visible.length===0){ $('inventory-list').innerHTML = `<div class="empty-state">No items match${term?' "'+term+'"':''}.</div>`; return; }
 
-  if(visible.length===0){
-    $('inventory-list').innerHTML = `<div class="empty-state">No items match${term ? ' "'+term+'"' : ''}.</div>`;
-    return;
-  }
-
-  const byCat = {};
-  visible.forEach(i=>{ (byCat[i.category] = byCat[i.category]||[]).push(i); });
+  const byCat = {}; visible.forEach(i=> (byCat[i.category]=byCat[i.category]||[]).push(i));
   const cats = Object.keys(byCat).sort();
   const searching = term || invLowOnly;
-  let html = '';
+  let html='';
   cats.forEach(cat=>{
-    const items = byCat[cat].sort((a,b)=>{
-      const r = STATUS_RANK[itemStatus(a)] - STATUS_RANK[itemStatus(b)];
-      return r !== 0 ? r : a.name.localeCompare(b.name);
-    });
-    const catFlagged = items.some(i=> itemStatus(i) !== 'ok');
-    if(!(cat in categoryCollapsed)) categoryCollapsed[cat] = true; // always start collapsed
+    const items = byCat[cat].sort((a,b)=>{ const r=STATUS_RANK[itemStatus(a)]-STATUS_RANK[itemStatus(b)]; return r!==0?r:a.name.localeCompare(b.name); });
+    const catFlagged = items.some(i=> itemStatus(i)!=='ok');
+    if(!(cat in categoryCollapsed)) categoryCollapsed[cat] = true;
     const isCollapsed = searching ? false : categoryCollapsed[cat];
     html += `<div class="cat-group ${isCollapsed?'collapsed':''}" data-cat="${cat}">
-      <div class="cat-title" onclick="toggleCategory('${cat}')">
-        <span class="cat-left"><span class="cat-chevron">▾</span> ${cat} <span class="cat-count">(${items.length})</span>
-        ${catFlagged ? '<span class="cat-flag-dot"></span>' : ''}</span>
-      </div>
+      <div class="cat-title" onclick="toggleCategory('${cat}')"><span class="cat-left"><span class="cat-chevron">▾</span> ${cat} <span class="cat-count">(${items.length})</span>${catFlagged?'<span class="cat-flag-dot"></span>':''}</span></div>
       <div class="cat-items">`;
     items.forEach(item=>{
       const status = itemStatus(item);
-      const badge = status==='ok' ? '<span class="status-badge status-ok">OK</span>'
-                  : status==='low' ? '<span class="status-badge status-low">Low</span>'
-                  : '<span class="status-badge status-out">Out</span>';
+      const badge = status==='ok'?'<span class="status-badge status-ok">OK</span>':status==='low'?'<span class="status-badge status-low">Low</span>':'<span class="status-badge status-out">Out</span>';
       const meta = item.lastUpdatedBy ? `Last updated by ${item.lastUpdatedBy} · ${fmtDate(item.lastUpdatedAt)}` : 'Not yet updated';
-      html += `
-        <div class="item-card">
-          <div class="item-info">
-            <div class="item-name">${item.name} ${badge}</div>
-            <div class="item-meta">${meta}${item.threshold!=null ? ' · alert below '+item.threshold : ''}</div>
-          </div>
-          <div class="item-count">${item.count}</div>
-          <div class="item-actions">
-            <button class="btn btn-ghost btn-sm" onclick="openLogModal('${item.id}')">Log use</button>
-            ${isAdmin ? `<button class="btn btn-amber btn-sm" onclick="openRestockModal('${item.id}')">Restock</button>` : ''}
-            ${isAdmin ? `<button class="btn btn-danger btn-sm" onclick="openDeleteModal('${item.id}')">Delete</button>` : ''}
-          </div>
-        </div>`;
+      html += `<div class="item-card">
+        <div class="item-info"><div class="item-name">${item.name} ${badge}</div><div class="item-meta">${meta}${item.threshold!=null?' · alert below '+item.threshold:''}</div></div>
+        <div class="item-count">${item.count}</div>
+        <div class="item-actions">
+          ${isAdmin ? `<button class="btn btn-amber btn-sm" onclick="openRestockModal('${item.id}')">Restock</button>` : ''}
+          ${isAdmin ? `<button class="btn btn-danger btn-sm" onclick="openDeleteModal('${item.id}')">Delete</button>` : ''}
+        </div></div>`;
     });
     html += `</div></div>`;
   });
   $('inventory-list').innerHTML = html;
 }
-window.toggleCategory = function(cat){ categoryCollapsed[cat] = !categoryCollapsed[cat]; renderInventory(); };
-$('inv-search').addEventListener('input', (e)=>{ invSearchTerm = e.target.value; renderInventory(); });
-$('inv-low-only').addEventListener('change', (e)=>{ invLowOnly = e.target.checked; renderInventory(); });
+window.toggleCategory = function(cat){ categoryCollapsed[cat]=!categoryCollapsed[cat]; renderInventory(); };
+$('inv-search').addEventListener('input', e=>{ invSearchTerm=e.target.value; renderInventory(); });
+$('inv-low-only').addEventListener('change', e=>{ invLowOnly=e.target.checked; renderInventory(); });
 
 async function seedInventory(){
-  const chunks = [];
-  for(let i=0;i<SEED_ITEMS.length;i+=400) chunks.push(SEED_ITEMS.slice(i,i+400));
+  const chunks=[]; for(let i=0;i<SEED_ITEMS.length;i+=400) chunks.push(SEED_ITEMS.slice(i,i+400));
   try{
     for(const chunk of chunks){
       const batch = db.batch();
       chunk.forEach(it=>{
         const ref = db.collection('items').doc();
-        const threshold = Math.max(1, Math.round(it.count * 0.15));
-        batch.set(ref, {
-          location: 'the75', category: it.category, name: it.name, count: it.count, threshold,
-          lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        const threshold = Math.max(1, Math.round(it.count*0.15));
+        batch.set(ref, { location:'the75', category:it.category, name:it.name, count:it.count, threshold, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() });
       });
       await batch.commit();
     }
-    logActivity('imported', `Imported ${SEED_ITEMS.length} starter items`);
     showToast('Starter inventory imported. Review thresholds when you get a chance.');
   }catch(err){ console.error(err); showToast('Import failed — check console.'); }
 }
 
-window.openLogModal = function(itemId){
-  logTargetItem = itemsCache.find(i=>i.id===itemId);
-  $('log-title').textContent = 'Log usage — ' + logTargetItem.name;
-  $('log-qty').value = 1; $('log-note').value = '';
-  $('log-backdrop').classList.add('open');
-};
-$('log-cancel').addEventListener('click', ()=> $('log-backdrop').classList.remove('open'));
-$('log-save').addEventListener('click', async ()=>{
-  const type = $('log-type').value;
-  const qty = parseInt($('log-qty').value || '1', 10);
-  const note = $('log-note').value.trim();
-  if(!logTargetItem || qty<=0) return;
-  const newCount = Math.max(0, logTargetItem.count - qty);
-  try{
-    await db.collection('items').doc(logTargetItem.id).update({
-      count: newCount, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    logActivity(type, `${qty} ${type} — ${logTargetItem.name}${note ? ' ('+note+')' : ''}`);
-    showToast('Logged.');
-    $('log-backdrop').classList.remove('open');
-  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
-});
-
 window.openRestockModal = function(itemId){
   restockTargetItem = itemsCache.find(i=>i.id===itemId);
   $('restock-title').textContent = 'Restock — ' + restockTargetItem.name;
-  $('restock-count').value = restockTargetItem.count;
-  $('restock-threshold').value = restockTargetItem.threshold ?? 0;
+  $('restock-count').value = restockTargetItem.count; $('restock-threshold').value = restockTargetItem.threshold ?? 0;
   $('restock-backdrop').classList.add('open');
 };
 $('restock-cancel').addEventListener('click', ()=> $('restock-backdrop').classList.remove('open'));
 $('restock-save').addEventListener('click', async ()=>{
   if(!restockTargetItem) return;
-  const count = parseInt($('restock-count').value || '0', 10);
-  const threshold = parseInt($('restock-threshold').value || '0', 10);
+  const count=parseInt($('restock-count').value||'0',10), threshold=parseInt($('restock-threshold').value||'0',10);
   try{
-    await db.collection('items').doc(restockTargetItem.id).update({
-      count, threshold, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    logActivity('restock', `Restocked ${restockTargetItem.name} to ${count}`);
-    showToast('Restocked.');
-    $('restock-backdrop').classList.remove('open');
+    await db.collection('items').doc(restockTargetItem.id).update({ count, threshold, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    showToast('Restocked.'); $('restock-backdrop').classList.remove('open');
   }catch(err){ console.error(err); showToast('Could not save — try again.'); }
 });
 
 $('add-cancel').addEventListener('click', ()=> $('add-backdrop').classList.remove('open'));
 $('add-save').addEventListener('click', async ()=>{
-  const category = $('add-category').value;
-  const name = $('add-name').value.trim();
-  const count = parseInt($('add-count').value || '0', 10);
-  const threshold = parseInt($('add-threshold').value || '1', 10);
+  const category=$('add-category').value, name=$('add-name').value.trim();
+  const count=parseInt($('add-count').value||'0',10), threshold=parseInt($('add-threshold').value||'1',10);
   if(!name) return showToast('Give the item a name.');
   try{
-    await db.collection('items').add({
-      location: currentLocation, category, name, count, threshold,
-      lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    logActivity('added', `Added new item — ${name}`);
-    showToast('Item added.');
-    $('add-name').value=''; $('add-count').value=0; $('add-threshold').value=1;
+    await db.collection('items').add({ location:currentLocation, category, name, count, threshold, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    showToast('Item added.'); $('add-name').value=''; $('add-count').value=0; $('add-threshold').value=1;
     $('add-backdrop').classList.remove('open');
   }catch(err){ console.error(err); showToast('Could not save — try again.'); }
 });
 
 window.openDeleteModal = function(itemId){
   deleteTargetItem = itemsCache.find(i=>i.id===itemId);
-  $('delete-title').textContent = 'Delete — ' + deleteTargetItem.name;
-  $('delete-pin').value = '';
+  $('delete-title').textContent = 'Delete — ' + deleteTargetItem.name; $('delete-pin').value = '';
   $('delete-backdrop').classList.add('open');
 };
 $('delete-cancel').addEventListener('click', ()=> $('delete-backdrop').classList.remove('open'));
 $('delete-confirm').addEventListener('click', async ()=>{
-  if($('delete-pin').value !== DELETE_PIN){
-    showToast('Wrong PIN.');
-    return;
-  }
-  try{
-    await db.collection('items').doc(deleteTargetItem.id).delete();
-    logActivity('deleted', `Deleted item — ${deleteTargetItem.name}`);
-    showToast('Item deleted.');
-    $('delete-backdrop').classList.remove('open');
-  }catch(err){ console.error(err); showToast('Could not delete — try again.'); }
+  if($('delete-pin').value !== DELETE_PIN){ showToast('Wrong PIN.'); return; }
+  try{ await db.collection('items').doc(deleteTargetItem.id).delete(); showToast('Item deleted.'); $('delete-backdrop').classList.remove('open'); }
+  catch(err){ console.error(err); showToast('Could not delete — try again.'); }
 });
 
-/* ============================================================
-   BROKEN / DAMAGE LOG
-   ============================================================ */
+/* ============================================================ BROKEN / DAMAGE LOG ============================================================ */
+function clearDamageSelection(){
+  selectedDamageItem = null;
+  $('dmg-selected-chip').innerHTML = '';
+  $('dmg-item-search').value = '';
+  $('dmg-item-search').disabled = false;
+  $('dmg-item-results').style.display = 'none';
+}
+$('dmg-item-search').addEventListener('input', e=>{
+  const term = e.target.value.trim().toLowerCase();
+  const results = $('dmg-item-results');
+  if(!term){ results.style.display='none'; results.innerHTML=''; return; }
+  const matches = itemsCache.filter(i=> i.name.toLowerCase().includes(term)).slice(0,10);
+  if(matches.length===0){ results.innerHTML = `<div class="search-result-row">No matches</div>`; results.style.display='block'; return; }
+  results.innerHTML = matches.map(i=> `<div class="search-result-row" onclick="pickDamageItem('${i.id}')">${i.name}<div class="search-result-cat">${i.category} · currently ${i.count}</div></div>`).join('');
+  results.style.display = 'block';
+});
+window.pickDamageItem = function(itemId){
+  selectedDamageItem = itemsCache.find(i=>i.id===itemId);
+  $('dmg-item-results').style.display = 'none';
+  $('dmg-item-search').value = '';
+  $('dmg-item-search').disabled = true;
+  $('dmg-selected-chip').innerHTML = `<span class="selected-item-chip">${selectedDamageItem.name} (${selectedDamageItem.count} on hand) <button type="button" onclick="clearDamageSelection()">✕</button></span>`;
+};
+
+$('dmg-submit').addEventListener('click', async ()=>{
+  if(!selectedDamageItem){ showToast('Search and pick an item first.'); return; }
+  const type = $('dmg-type').value;
+  const qty = parseInt($('dmg-qty').value || '1', 10);
+  const eventName = $('dmg-event').value.trim() || null;
+  if(qty<=0){ showToast('Quantity must be at least 1.'); return; }
+  try{
+    const newCount = Math.max(0, selectedDamageItem.count - qty);
+    await db.collection('items').doc(selectedDamageItem.id).update({ count: newCount, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    await db.collection('damagelog').add({
+      location: currentLocation, itemId: selectedDamageItem.id, itemName: selectedDamageItem.name, quantity: qty, type, eventName,
+      staffName: whoAmI(), timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showToast('Logged.');
+    clearDamageSelection(); $('dmg-qty').value=1; $('dmg-event').value='';
+  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
+});
+
 function renderDamageLog(){
-  if(activityCache.length===0){
-    $('damagelog-list').innerHTML = `<div class="empty-state">Nothing logged yet for ${LOCATIONS[currentLocation]}.</div>`;
-    return;
-  }
-  const kindClass = { used:'kind-used', broken:'kind-broken', restock:'kind-restock' };
-  const kindLabel = { used:'Used', broken:'Broken/Damaged', restock:'Restocked', added:'Added', imported:'Imported', deleted:'Deleted' };
-  let html = '';
-  activityCache.forEach(a=>{
-    const cls = kindClass[a.type] || 'kind-other';
-    const label = kindLabel[a.type] || (a.type || 'Update');
-    html += `
-      <div class="activity-row">
-        <span class="activity-kind ${cls}">${label}</span>
-        <div class="activity-body">
-          <div>${a.summary}</div>
-          <div class="activity-meta">${a.staffName || ''} · ${fmtDate(a.timestamp)}</div>
-        </div>
-      </div>`;
+  if(damagelogCache.length===0){ $('damagelog-list').innerHTML = `<div class="empty-state">Nothing logged yet for ${LOCATIONS[currentLocation]}.</div>`; return; }
+  let html=''; let lastLabel=null;
+  damagelogCache.forEach(entry=>{
+    const label = monthYearLabel(entry.timestamp);
+    if(label !== lastLabel){ html += `<div class="month-sep">${label}</div>`; lastLabel = label; }
+    const cls = entry.type==='broken' ? 'kind-broken' : 'kind-used';
+    const kindLabel = entry.type==='broken' ? 'Broken/Damaged' : 'Used';
+    html += `<div class="log-row">
+      <span class="log-kind ${cls}">${kindLabel}</span>
+      <div class="log-body">
+        <div>${entry.quantity} × ${entry.itemName}${entry.eventName ? ' — ' + entry.eventName : ''}</div>
+        <div class="log-meta">${entry.staffName} · ${fmtDate(entry.timestamp)}</div>
+      </div>
+      ${isAdmin ? `<button class="log-delete" onclick="deleteDamageEntry('${entry.id}')">Delete</button>` : ''}
+    </div>`;
   });
   $('damagelog-list').innerHTML = html;
 }
+window.deleteDamageEntry = async function(id){
+  if(!confirm('Delete this log entry? This does not change the current item count.')) return;
+  try{ await db.collection('damagelog').doc(id).delete(); showToast('Entry deleted.'); }
+  catch(err){ console.error(err); showToast('Could not delete — try again.'); }
+};
 
-/* ============================================================
-   MAINTENANCE
-   ============================================================ */
-$('maintenance-form').addEventListener('submit', async (e)=>{
+/* ============================================================ MAINTENANCE ============================================================ */
+$('maintenance-form').addEventListener('submit', async e=>{
   e.preventDefault();
-  const category = $('maint-category').value;
-  const priority = $('maint-priority').value;
-  const handler = $('maint-handler').value;
-  const description = $('maint-description').value.trim();
+  const category=$('maint-category').value, priority=$('maint-priority').value, handler=$('maint-handler').value, description=$('maint-description').value.trim();
   if(!description) return;
   try{
-    await db.collection('maintenance').add({
-      location: currentLocation, category, priority, handler, description, status: 'open',
-      reportedBy: whoAmI(), reportedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    logActivity('maintenance', `Reported — ${description}`);
-    showToast('Reported.');
-    e.target.reset();
+    await db.collection('maintenance').add({ location:currentLocation, category, priority, handler, description, status:'open', reportedBy: whoAmI(), reportedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    showToast('Reported.'); e.target.reset();
   }catch(err){ console.error(err); showToast('Could not save — try again.'); }
 });
-
-function splitOpenResolved(list, resolvedField, resolvedAtField){
+function splitOpenResolved(list, resolvedAtField){
   const open = list.filter(x=> x.status==='open');
   const resolved = list.filter(x=> x.status!=='open' && daysSince(x[resolvedAtField]) <= RESOLVED_VISIBLE_DAYS);
-  return { open, resolved };
+  return {open, resolved};
 }
-
 function renderMaintenance(){
   const openCount = maintenanceCache.filter(m=>m.status==='open').length;
-  $('maint-chip').style.display = openCount ? 'inline-block' : 'none';
-  $('maint-chip').textContent = openCount;
-
-  const { open, resolved } = splitOpenResolved(maintenanceCache, 'resolvedBy', 'resolvedAt');
-  open.sort((a,b)=>{
-    const r = (PRIORITY_RANK[a.priority] ?? 9) - (PRIORITY_RANK[b.priority] ?? 9);
-    return r !== 0 ? r : (a.reportedAt?.seconds||0) - (b.reportedAt?.seconds||0);
-  });
-  resolved.sort((a,b)=> (b.resolvedAt?.seconds||0) - (a.resolvedAt?.seconds||0));
-
-  if(maintenanceCache.length===0){
-    $('maintenance-list').innerHTML = `<div class="empty-state">No maintenance reports for ${LOCATIONS[currentLocation]}.</div>`;
-    return;
-  }
-  let html = '';
-  if(open.length===0 && resolved.length===0){
-    html = `<div class="empty-state">Nothing open right now.</div>`;
-  }
-  open.forEach(m=> html += maintenanceCard(m, false));
-  if(resolved.length){
-    html += `<div class="section-sub">Resolved (last ${RESOLVED_VISIBLE_DAYS} days)</div>`;
-    resolved.forEach(m=> html += maintenanceCard(m, true));
-  }
-  $('maintenance-list').innerHTML = html;
+  $('maint-chip').style.display = openCount?'inline-block':'none'; $('maint-chip').textContent = openCount;
+  const {open, resolved} = splitOpenResolved(maintenanceCache, 'resolvedAt');
+  open.sort((a,b)=>{ const r=(PRIORITY_RANK[a.priority]??9)-(PRIORITY_RANK[b.priority]??9); return r!==0?r:(a.reportedAt?.seconds||0)-(b.reportedAt?.seconds||0); });
+  resolved.sort((a,b)=>(b.resolvedAt?.seconds||0)-(a.resolvedAt?.seconds||0));
+  if(maintenanceCache.length===0){ $('maintenance-list').innerHTML = `<div class="empty-state">No maintenance reports for ${LOCATIONS[currentLocation]}.</div>`; return; }
+  let html='';
+  open.forEach(m=> html += maintenanceCard(m,false));
+  if(resolved.length){ html += `<div class="section-sub">Resolved (last ${RESOLVED_VISIBLE_DAYS} days)</div>`; resolved.forEach(m=> html += maintenanceCard(m,true)); }
+  $('maintenance-list').innerHTML = html || `<div class="empty-state">Nothing open right now.</div>`;
 }
 function maintenanceCard(m, isResolved){
   const isUrgent = m.priority && m.priority.startsWith('Urgent');
-  return `
-    <div class="card ${isResolved?'card-resolved':''}">
-      <div class="card-top">
-        <div>
-          <div class="card-title">${m.category}</div>
-          <div class="card-tags">
-            <span class="tag ${isUrgent?'tag-urgent':''}">${m.priority}</span>
-            <span class="tag">${m.handler}</span>
-            <span class="tag">${m.status==='open' ? 'Open' : 'Resolved'}</span>
-          </div>
-        </div>
-        <div class="card-actions">
-          ${(isAdmin && m.status==='open') ? `<button class="btn btn-amber btn-sm" onclick="resolveMaintenance('${m.id}')">Mark resolved</button>` : ''}
-          ${(isAdmin && m.status!=='open') ? `<button class="btn btn-ghost btn-sm" onclick="undoMaintenance('${m.id}')">Undo</button>` : ''}
-        </div>
+  return `<div class="card ${isResolved?'card-resolved':''}">
+    <div class="card-top">
+      <div><div class="card-title">${m.category}</div><div class="card-tags"><span class="tag ${isUrgent?'tag-urgent':''}">${m.priority}</span><span class="tag">${m.handler}</span><span class="tag">${m.status==='open'?'Open':'Resolved'}</span></div></div>
+      <div class="card-actions">
+        ${(isAdmin && m.status==='open') ? `<button class="btn btn-amber btn-sm" onclick="resolveMaintenance('${m.id}')">Mark resolved</button>` : ''}
+        ${(isAdmin && m.status!=='open') ? `<button class="btn btn-ghost btn-sm" onclick="undoMaintenance('${m.id}')">Undo</button>` : ''}
       </div>
-      <div class="card-desc">${m.description}</div>
-      <div class="card-meta">Reported by ${m.reportedBy} · ${fmtDate(m.reportedAt)}
-      ${m.status==='resolved' ? ` · Resolved by ${m.resolvedBy} · ${fmtDate(m.resolvedAt)}` : ''}</div>
-    </div>`;
+    </div>
+    <div class="card-desc">${m.description}</div>
+    <div class="card-meta">Reported by ${m.reportedBy} · ${fmtDate(m.reportedAt)}${m.status==='resolved' ? ` · Resolved by ${m.resolvedBy} · ${fmtDate(m.resolvedAt)}` : ''}</div>
+  </div>`;
 }
 window.resolveMaintenance = async function(id){
-  try{
-    await db.collection('maintenance').doc(id).update({
-      status:'resolved', resolvedBy: whoAmI(), resolvedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    showToast('Marked resolved.');
-  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
+  try{ await db.collection('maintenance').doc(id).update({status:'resolved', resolvedBy: whoAmI(), resolvedAt: firebase.firestore.FieldValue.serverTimestamp()}); showToast('Marked resolved.'); }
+  catch(err){ console.error(err); showToast('Could not save — try again.'); }
 };
 window.undoMaintenance = async function(id){
-  try{
-    await db.collection('maintenance').doc(id).update({
-      status:'open', resolvedBy: firebase.firestore.FieldValue.delete(), resolvedAt: firebase.firestore.FieldValue.delete()
-    });
-    showToast('Reopened.');
-  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
+  try{ await db.collection('maintenance').doc(id).update({status:'open', resolvedBy: firebase.firestore.FieldValue.delete(), resolvedAt: firebase.firestore.FieldValue.delete()}); showToast('Reopened.'); }
+  catch(err){ console.error(err); showToast('Could not save — try again.'); }
 };
 
-/* ============================================================
-   EVENT REQUESTS
-   ============================================================ */
-$('request-form').addEventListener('submit', async (e)=>{
+/* ============================================================ EVENT REQUESTS ============================================================ */
+$('request-form').addEventListener('submit', async e=>{
   e.preventDefault();
-  const description = $('req-description').value.trim();
-  const eventDate = $('req-date').value || null;
+  const description=$('req-description').value.trim(), eventDate=$('req-date').value||null;
   if(!description) return;
   try{
-    await db.collection('requests').add({
-      location: currentLocation, description, eventDate, status: 'open',
-      requestedBy: whoAmI(), requestedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    logActivity('request', `Requested — ${description}`);
-    showToast('Requested.');
-    e.target.reset();
+    await db.collection('requests').add({ location:currentLocation, description, eventDate, status:'open', requestedBy: whoAmI(), requestedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    showToast('Requested.'); e.target.reset();
   }catch(err){ console.error(err); showToast('Could not save — try again.'); }
 });
-
 function renderRequests(){
   const openCount = requestsCache.filter(r=>r.status==='open').length;
-  $('req-chip').style.display = openCount ? 'inline-block' : 'none';
-  $('req-chip').textContent = openCount;
-
-  const { open, resolved } = splitOpenResolved(requestsCache, 'fulfilledBy', 'fulfilledAt');
-  open.sort((a,b)=>{
-    if(a.eventDate && b.eventDate) return a.eventDate.localeCompare(b.eventDate);
-    if(a.eventDate) return -1;
-    if(b.eventDate) return 1;
-    return (a.requestedAt?.seconds||0) - (b.requestedAt?.seconds||0);
-  });
-  resolved.sort((a,b)=> (b.fulfilledAt?.seconds||0) - (a.fulfilledAt?.seconds||0));
-
-  if(requestsCache.length===0){
-    $('requests-list').innerHTML = `<div class="empty-state">No item requests for ${LOCATIONS[currentLocation]}.</div>`;
-    return;
-  }
-  let html = '';
-  open.forEach(r=> html += requestCard(r, false));
-  if(resolved.length){
-    html += `<div class="section-sub">Fulfilled (last ${RESOLVED_VISIBLE_DAYS} days)</div>`;
-    resolved.forEach(r=> html += requestCard(r, true));
-  }
+  $('req-chip').style.display = openCount?'inline-block':'none'; $('req-chip').textContent = openCount;
+  const {open, resolved} = splitOpenResolved(requestsCache, 'fulfilledAt');
+  open.sort((a,b)=>{ if(a.eventDate&&b.eventDate) return a.eventDate.localeCompare(b.eventDate); if(a.eventDate) return -1; if(b.eventDate) return 1; return (a.requestedAt?.seconds||0)-(b.requestedAt?.seconds||0); });
+  resolved.sort((a,b)=>(b.fulfilledAt?.seconds||0)-(a.fulfilledAt?.seconds||0));
+  if(requestsCache.length===0){ $('requests-list').innerHTML = `<div class="empty-state">No item requests for ${LOCATIONS[currentLocation]}.</div>`; return; }
+  let html='';
+  open.forEach(r=> html += requestCard(r,false));
+  if(resolved.length){ html += `<div class="section-sub">Fulfilled (last ${RESOLVED_VISIBLE_DAYS} days)</div>`; resolved.forEach(r=> html += requestCard(r,true)); }
   $('requests-list').innerHTML = html || `<div class="empty-state">Nothing open right now.</div>`;
 }
 function requestCard(r, isResolved){
-  return `
-    <div class="card ${isResolved?'card-resolved':''}">
-      <div class="card-top">
-        <div class="card-tags">
-          ${r.eventDate ? `<span class="tag">For ${r.eventDate}</span>` : ''}
-          <span class="tag">${r.status==='open' ? 'Open' : 'Fulfilled'}</span>
-        </div>
-        <div class="card-actions">
-          ${(isAdmin && r.status==='open') ? `<button class="btn btn-amber btn-sm" onclick="fulfillRequest('${r.id}')">Mark fulfilled</button>` : ''}
-          ${(isAdmin && r.status!=='open') ? `<button class="btn btn-ghost btn-sm" onclick="undoRequest('${r.id}')">Undo</button>` : ''}
-        </div>
+  return `<div class="card ${isResolved?'card-resolved':''}">
+    <div class="card-top">
+      <div class="card-tags">${r.eventDate?`<span class="tag">For ${r.eventDate}</span>`:''}<span class="tag">${r.status==='open'?'Open':'Fulfilled'}</span></div>
+      <div class="card-actions">
+        ${(isAdmin && r.status==='open') ? `<button class="btn btn-amber btn-sm" onclick="fulfillRequest('${r.id}')">Mark fulfilled</button>` : ''}
+        ${(isAdmin && r.status!=='open') ? `<button class="btn btn-ghost btn-sm" onclick="undoRequest('${r.id}')">Undo</button>` : ''}
       </div>
-      <div class="card-desc">${r.description}</div>
-      <div class="card-meta">Requested by ${r.requestedBy} · ${fmtDate(r.requestedAt)}
-      ${r.status==='fulfilled' ? ` · Fulfilled by ${r.fulfilledBy} · ${fmtDate(r.fulfilledAt)}` : ''}</div>
-    </div>`;
+    </div>
+    <div class="card-desc">${r.description}</div>
+    <div class="card-meta">Requested by ${r.requestedBy} · ${fmtDate(r.requestedAt)}${r.status==='fulfilled' ? ` · Fulfilled by ${r.fulfilledBy} · ${fmtDate(r.fulfilledAt)}` : ''}</div>
+  </div>`;
 }
 window.fulfillRequest = async function(id){
-  try{
-    await db.collection('requests').doc(id).update({
-      status:'fulfilled', fulfilledBy: whoAmI(), fulfilledAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    showToast('Marked fulfilled.');
-  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
+  try{ await db.collection('requests').doc(id).update({status:'fulfilled', fulfilledBy: whoAmI(), fulfilledAt: firebase.firestore.FieldValue.serverTimestamp()}); showToast('Marked fulfilled.'); }
+  catch(err){ console.error(err); showToast('Could not save — try again.'); }
 };
 window.undoRequest = async function(id){
-  try{
-    await db.collection('requests').doc(id).update({
-      status:'open', fulfilledBy: firebase.firestore.FieldValue.delete(), fulfilledAt: firebase.firestore.FieldValue.delete()
-    });
-    showToast('Reopened.');
-  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
+  try{ await db.collection('requests').doc(id).update({status:'open', fulfilledBy: firebase.firestore.FieldValue.delete(), fulfilledAt: firebase.firestore.FieldValue.delete()}); showToast('Reopened.'); }
+  catch(err){ console.error(err); showToast('Could not save — try again.'); }
 };
 
-/* ============================================================
-   VENUE WISHLIST
-   ============================================================ */
-$('wishlist-form').addEventListener('submit', async (e)=>{
+/* ============================================================ VENUE WISHLIST ============================================================ */
+$('wishlist-form').addEventListener('submit', async e=>{
   e.preventDefault();
-  const description = $('wish-description').value.trim();
-  if(!description) return;
+  const description=$('wish-description').value.trim(); if(!description) return;
   try{
-    await db.collection('wishlist').add({
-      location: currentLocation, description, status:'open',
-      requestedBy: whoAmI(), requestedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    showToast('Added to wishlist.');
-    e.target.reset();
+    await db.collection('wishlist').add({ location:currentLocation, description, status:'open', requestedBy: whoAmI(), requestedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    showToast('Added to wishlist.'); e.target.reset();
   }catch(err){ console.error(err); showToast('Could not save — try again.'); }
 });
 function renderWishlist(){
-  const { open, resolved } = splitOpenResolved(wishlistCache, 'acquiredBy', 'acquiredAt');
-  open.sort((a,b)=> (a.requestedAt?.seconds||0) - (b.requestedAt?.seconds||0));
-  resolved.sort((a,b)=> (b.acquiredAt?.seconds||0) - (a.acquiredAt?.seconds||0));
-
-  if(wishlistCache.length===0){
-    $('wishlist-list').innerHTML = `<div class="empty-state">Nothing on the wishlist for ${LOCATIONS[currentLocation]} yet.</div>`;
-    return;
-  }
-  let html = '';
-  open.forEach(w=> html += wishCard(w, false));
-  if(resolved.length){
-    html += `<div class="section-sub">Acquired (last ${RESOLVED_VISIBLE_DAYS} days)</div>`;
-    resolved.forEach(w=> html += wishCard(w, true));
-  }
+  const {open, resolved} = splitOpenResolved(wishlistCache, 'acquiredAt');
+  open.sort((a,b)=>(a.requestedAt?.seconds||0)-(b.requestedAt?.seconds||0));
+  resolved.sort((a,b)=>(b.acquiredAt?.seconds||0)-(a.acquiredAt?.seconds||0));
+  if(wishlistCache.length===0){ $('wishlist-list').innerHTML = `<div class="empty-state">Nothing on the wishlist for ${LOCATIONS[currentLocation]} yet.</div>`; return; }
+  let html='';
+  open.forEach(w=> html += wishCard(w,false));
+  if(resolved.length){ html += `<div class="section-sub">Acquired (last ${RESOLVED_VISIBLE_DAYS} days)</div>`; resolved.forEach(w=> html += wishCard(w,true)); }
   $('wishlist-list').innerHTML = html || `<div class="empty-state">Nothing open right now.</div>`;
 }
 function wishCard(w, isResolved){
-  return `
-    <div class="card ${isResolved?'card-resolved':''}">
-      <div class="card-top">
-        <div class="card-tags"><span class="tag">${w.status==='open' ? 'Open' : 'Acquired'}</span></div>
-        <div class="card-actions">
-          ${(isAdmin && w.status==='open') ? `<button class="btn btn-amber btn-sm" onclick="acquireWish('${w.id}')">Mark acquired</button>` : ''}
-          ${(isAdmin && w.status!=='open') ? `<button class="btn btn-ghost btn-sm" onclick="undoWish('${w.id}')">Undo</button>` : ''}
-        </div>
-      </div>
-      <div class="card-desc">${w.description}</div>
-      <div class="card-meta">Added by ${w.requestedBy} · ${fmtDate(w.requestedAt)}
-      ${w.status==='acquired' ? ` · Acquired by ${w.acquiredBy} · ${fmtDate(w.acquiredAt)}` : ''}</div>
-    </div>`;
+  return `<div class="card ${isResolved?'card-resolved':''}">
+    <div class="card-top"><div class="card-tags"><span class="tag">${w.status==='open'?'Open':'Acquired'}</span></div>
+      <div class="card-actions">
+        ${(isAdmin && w.status==='open') ? `<button class="btn btn-amber btn-sm" onclick="acquireWish('${w.id}')">Mark acquired</button>` : ''}
+        ${(isAdmin && w.status!=='open') ? `<button class="btn btn-ghost btn-sm" onclick="undoWish('${w.id}')">Undo</button>` : ''}
+      </div></div>
+    <div class="card-desc">${w.description}</div>
+    <div class="card-meta">Added by ${w.requestedBy} · ${fmtDate(w.requestedAt)}${w.status==='acquired' ? ` · Acquired by ${w.acquiredBy} · ${fmtDate(w.acquiredAt)}` : ''}</div>
+  </div>`;
 }
 window.acquireWish = async function(id){
-  try{
-    await db.collection('wishlist').doc(id).update({
-      status:'acquired', acquiredBy: whoAmI(), acquiredAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    showToast('Marked acquired.');
-  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
+  try{ await db.collection('wishlist').doc(id).update({status:'acquired', acquiredBy: whoAmI(), acquiredAt: firebase.firestore.FieldValue.serverTimestamp()}); showToast('Marked acquired.'); }
+  catch(err){ console.error(err); showToast('Could not save — try again.'); }
 };
 window.undoWish = async function(id){
-  try{
-    await db.collection('wishlist').doc(id).update({
-      status:'open', acquiredBy: firebase.firestore.FieldValue.delete(), acquiredAt: firebase.firestore.FieldValue.delete()
-    });
-    showToast('Reopened.');
-  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
+  try{ await db.collection('wishlist').doc(id).update({status:'open', acquiredBy: firebase.firestore.FieldValue.delete(), acquiredAt: firebase.firestore.FieldValue.delete()}); showToast('Reopened.'); }
+  catch(err){ console.error(err); showToast('Could not save — try again.'); }
 };
 
-/* ============================================================
-   MESSAGE TO MANAGEMENT
-   ============================================================ */
-$('message-form').addEventListener('submit', async (e)=>{
+/* ============================================================ MESSAGE TO MANAGEMENT ============================================================ */
+function refreshMsgTypeUI(){
+  const type = $('msg-type').value;
+  $('msg-body').placeholder = TYPE_PLACEHOLDERS[type] || '';
+  $('msg-body').required = (type !== 'Meeting request');
+  $('msg-body-label').textContent = (type === 'Meeting request') ? 'Notes' : 'Message';
+  const showMeeting = (type === 'Meeting request');
+  $('meeting-fields').style.display = showMeeting ? 'block' : 'none';
+  if(showMeeting){
+    const min = new Date(Date.now() + 24*60*60*1000);
+    const minStr = new Date(min.getTime() - min.getTimezoneOffset()*60000).toISOString().slice(0,16);
+    ['mtg-time1','mtg-time2','mtg-time3'].forEach(id=> $(id).min = minStr);
+  }
+}
+$('msg-type').addEventListener('change', refreshMsgTypeUI);
+refreshMsgTypeUI();
+
+$('message-form').addEventListener('submit', async e=>{
   e.preventDefault();
+  const recipientKey = $('msg-recipient').value;
   const type = $('msg-type').value;
   const message = $('msg-body').value.trim();
-  if(!message) return;
+  const payload = {
+    location: currentLocation, type, message: message || null,
+    recipients: RECIPIENT_MAP[recipientKey], status: 'open',
+    submittedByName: whoAmI(), submittedByEmail: currentUser.email,
+    submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  if(type === 'Meeting request'){
+    const format = $('mtg-format').value, attendees = $('mtg-attendees').value.trim();
+    const times = [$('mtg-time1').value, $('mtg-time2').value, $('mtg-time3').value];
+    if(!attendees || times.some(t=>!t)){ showToast('Fill in attendees and all three time options.'); return; }
+    const minAllowed = Date.now() + 24*60*60*1000;
+    if(times.some(t=> new Date(t).getTime() < minAllowed)){ showToast('Each time option must be at least 24 hours from now.'); return; }
+    payload.meetingFormat = format;
+    payload.meetingAttendees = attendees;
+    payload.meetingTimes = times;
+  }
   try{
-    await db.collection('messages').add({
-      location: currentLocation, type, message, status:'open',
-      submittedByName: whoAmI(), submittedByEmail: currentUser.email,
-      submittedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    await db.collection('messages').add(payload);
     showToast('Sent securely.');
     e.target.reset();
+    refreshMsgTypeUI();
   }catch(err){ console.error(err); showToast('Could not send — try again.'); }
 });
+
+$('msg-type-filter').addEventListener('change', e=>{ msgTypeFilter = e.target.value; renderMessages(); });
+
+function recipientLabel(recipients){
+  if(!recipients) return '';
+  if(recipients.length === ADMIN_EMAILS.length) return 'All management';
+  return recipients.map(e=> RECIPIENT_NAME[e] || e).join(', ');
+}
 function renderMessages(){
-  if(messagesCache.length===0){
-    $('messages-list').innerHTML = `<div class="empty-state">${isAdmin ? 'No messages yet.' : "You haven't sent anything yet."}</div>`;
-    return;
-  }
-  let html = '';
-  messagesCache.forEach(m=>{
-    html += `
-      <div class="card">
-        <div class="card-top">
-          <div class="card-tags"><span class="tag">${m.type}</span><span class="tag">${m.status==='reviewed' ? 'Reviewed' : 'Open'}</span></div>
+  $('messages-sub').textContent = isAdmin
+    ? "Messages sent to you — other admins' private messages stay private."
+    : "Only management can see these. You can see what you've sent below.";
+  let list = messagesCache;
+  if(msgTypeFilter) list = list.filter(m=> m.type === msgTypeFilter);
+  if(list.length===0){ $('messages-list').innerHTML = `<div class="empty-state">${isAdmin ? 'Nothing here.' : "You haven't sent anything yet."}</div>`; return; }
+  let html='';
+  list.forEach(m=>{
+    let body = '';
+    if(m.type === 'Meeting request'){
+      body = `<div><strong>${m.meetingFormat}</strong> · Wants present: ${m.meetingAttendees}</div>
+        <div style="margin-top:4px;">Proposed times:<br>${(m.meetingTimes||[]).map(t=> new Date(t).toLocaleString(undefined,{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})).join('<br>')}</div>
+        ${m.message ? `<div style="margin-top:8px;">${m.message}</div>` : ''}`;
+    } else {
+      body = m.message || '';
+    }
+    html += `<div class="card">
+      <div class="card-top">
+        <div class="card-tags"><span class="tag">${m.type}</span><span class="tag">To: ${recipientLabel(m.recipients)}</span><span class="tag">${m.status==='reviewed'?'Reviewed':'Open'}</span></div>
+        <div class="card-actions">
           ${(isAdmin && m.status!=='reviewed') ? `<button class="btn btn-ghost btn-sm" onclick="reviewMessage('${m.id}')">Mark reviewed</button>` : ''}
+          ${isAdmin ? `<button class="log-delete" onclick="deleteMessage('${m.id}')">Delete</button>` : ''}
         </div>
-        <div class="card-desc">${m.message}</div>
-        <div class="card-meta">${isAdmin ? 'From '+m.submittedByName+' · ' : ''}${fmtDate(m.submittedAt)}</div>
-      </div>`;
+      </div>
+      <div class="card-desc">${body}</div>
+      <div class="card-meta">${isAdmin ? 'From '+m.submittedByName+' · ' : ''}${fmtDate(m.submittedAt)}</div>
+    </div>`;
   });
   $('messages-list').innerHTML = html;
 }
 window.reviewMessage = async function(id){
-  try{
-    await db.collection('messages').doc(id).update({ status:'reviewed' });
-    showToast('Marked reviewed.');
-  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
+  try{ await db.collection('messages').doc(id).update({status:'reviewed'}); showToast('Marked reviewed.'); }
+  catch(err){ console.error(err); showToast('Could not save — try again.'); }
+};
+window.deleteMessage = async function(id){
+  if(!confirm('Delete this message?')) return;
+  try{ await db.collection('messages').doc(id).delete(); showToast('Deleted.'); }
+  catch(err){ console.error(err); showToast('Could not delete — try again.'); }
 };
 </script>
 </body>
