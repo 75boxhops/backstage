@@ -186,6 +186,19 @@
   .best-price{border-color:var(--green) !important;background:var(--green-wash);}
   .best-price-badge{background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;}
   .receipt-link{font-size:12.5px;color:var(--amber-deep);text-decoration:underline;}
+  .history-tag{cursor:pointer;}
+  .history-tag:hover{background:var(--amber-wash);color:var(--amber-deep);}
+  .history-panel{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);}
+  .history-row{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line);}
+  .history-row:last-child{border-bottom:none;}
+  .history-row-left{color:var(--ink-soft);}
+  .compare-box{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;}
+  .compare-box .card-title{margin-bottom:8px;}
+  .compare-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;margin-bottom:4px;background:var(--paper);border:1px solid var(--line);}
+  .compare-row.best{background:var(--green-wash);border-color:var(--green);}
+  .compare-row-vendor{font-weight:600;font-size:13.5px;}
+  .compare-row-meta{font-size:11.5px;color:var(--ink-soft);}
+  .compare-row-price{font-weight:700;font-family:'Fraunces',serif;font-size:15px;}
 
   @media (max-width:640px){
     header.topbar{padding:10px 14px;gap:8px;}
@@ -471,10 +484,12 @@
         <button type="button" class="btn btn-amber" id="pur-submit">Log it</button>
       </div>
 
-      <div class="inv-toolbar">
-        <select id="pur-compare-select"><option value="">All entries (newest first)</option></select>
-      </div>
+      <div class="section-sub">Purchases</div>
       <div id="purchases-list"></div>
+
+      <div class="section-sub" style="margin-top:28px;">Price Comparison</div>
+      <div class="muted" style="margin-bottom:14px;">Latest known price per vendor for each item — the cheapest current option is highlighted.</div>
+      <div id="comparison-list"></div>
     </div>
 
   </main>
@@ -801,6 +816,7 @@ let itemsCache = [], maintenanceCache = [], requestsCache = [], wishlistCache = 
 let unsubItems=null, unsubMaint=null, unsubReq=null, unsubWish=null, unsubMsg=null, unsubDamage=null, unsubPurchases=null;
 let restockTargetItem = null, deleteTargetItem = null, selectedDamageItem = null, selectedPurchaseItem = null;
 let categoryCollapsed = {};
+let purchaseHistoryOpen = {};
 let invSearchTerm = '', invLowOnly = false, msgTypeFilter = '';
 
 const $ = (id) => document.getElementById(id);
@@ -1456,52 +1472,106 @@ $('pur-submit').addEventListener('click', async ()=>{
   finally{ $('pur-submit').disabled = false; $('pur-submit').textContent = 'Log it'; }
 });
 
-$('pur-compare-select').addEventListener('change', renderPurchases);
-
 function renderPurchases(){
   const vendors = [...new Set(purchasesCache.map(p=>p.vendor))].sort();
   $('pur-vendor-list').innerHTML = vendors.map(v=>`<option value="${v}"></option>`).join('');
 
-  const items = [...new Set(purchasesCache.map(p=>p.itemName))].sort();
-  const currentFilter = $('pur-compare-select').value;
-  $('pur-compare-select').innerHTML = `<option value="">All entries (newest first)</option>` +
-    items.map(name=> `<option value="${name}" ${name===currentFilter?'selected':''}>Compare prices: ${name}</option>`).join('');
-
-  if(purchasesCache.length===0){ $('purchases-list').innerHTML = `<div class="empty-state">Nothing logged yet for ${LOCATIONS[currentLocation]}.</div>`; return; }
-
-  const filter = $('pur-compare-select').value;
-  let list = purchasesCache;
-  let html = '';
-  if(filter){
-    list = list.filter(p=> p.itemName === filter).sort((a,b)=> a.unitPrice - b.unitPrice);
-    list.forEach((p,idx)=> html += purchaseCard(p, idx===0));
-  } else {
-    list = [...list].sort((a,b)=> (b.purchasedAt?.seconds||0) - (a.purchasedAt?.seconds||0));
-    list.forEach(p=> html += purchaseCard(p, false));
+  if(purchasesCache.length===0){
+    $('purchases-list').innerHTML = `<div class="empty-state">Nothing logged yet for ${LOCATIONS[currentLocation]}.</div>`;
+    $('comparison-list').innerHTML = '';
+    return;
   }
+
+  // ---- Purchases section: one card per item, grouped across vendors ----
+  const purchaseEntries = purchasesCache.filter(p => p.entryType === 'purchase');
+  const byItem = {};
+  purchaseEntries.forEach(p => (byItem[p.itemName] = byItem[p.itemName] || []).push(p));
+  const itemGroups = Object.keys(byItem).map(name => {
+    const entries = byItem[name].slice().sort((a,b) => (a.date||'').localeCompare(b.date||''));
+    return { name, entries, latest: entries[entries.length-1] };
+  }).sort((a,b) => (b.latest.date||'').localeCompare(a.latest.date||''));
+
+  let html = '';
+  if(itemGroups.length===0){
+    html = `<div class="empty-state">No purchases logged yet — price checks show up below in comparison.</div>`;
+  }
+  itemGroups.forEach(group => html += purchaseGroupCard(group));
   $('purchases-list').innerHTML = html;
+
+  // ---- Price Comparison section: one box per item, one row per vendor (latest price) ----
+  const byItemAll = {};
+  purchasesCache.forEach(p => (byItemAll[p.itemName] = byItemAll[p.itemName] || []).push(p));
+  const compareItems = Object.keys(byItemAll).sort();
+  let cHtml = '';
+  compareItems.forEach(name => {
+    const entries = byItemAll[name];
+    const byVendor = {};
+    entries.forEach(p => {
+      const existing = byVendor[p.vendor];
+      if(!existing || (p.date||'') > (existing.date||'')) byVendor[p.vendor] = p;
+    });
+    const vendorRows = Object.values(byVendor).sort((a,b)=> a.unitPrice - b.unitPrice);
+    const bestPrice = vendorRows[0]?.unitPrice;
+    cHtml += `<div class="compare-box">
+      <div class="card-title">${name}</div>
+      ${vendorRows.map(v => `
+        <div class="compare-row ${v.unitPrice===bestPrice ? 'best' : ''}">
+          <div>
+            <div class="compare-row-vendor">${v.vendor} ${v.unitPrice===bestPrice ? '<span class="best-price-badge">Best price</span>' : ''}</div>
+            <div class="compare-row-meta">${v.entryType==='price_check'?'Price check':'Purchase'} · ${v.date}</div>
+          </div>
+          <div class="compare-row-price">$${v.unitPrice.toFixed(2)}/ea</div>
+        </div>`).join('')}
+    </div>`;
+  });
+  $('comparison-list').innerHTML = cHtml || `<div class="empty-state">Nothing to compare yet.</div>`;
 }
-function purchaseCard(p, isBest){
-  const isPriceCheck = p.entryType === 'price_check';
-  const typeTag = isPriceCheck ? `<span class="tag">Price check</span>` : `<span class="tag">Purchase</span>`;
-  const detailTag = isPriceCheck
-    ? `<span class="tag">$${p.unitPrice.toFixed(2)}/ea observed</span>`
-    : `<span class="tag">${p.quantity} @ $${p.unitPrice.toFixed(2)}/ea</span><span class="tag">$${p.totalPrice.toFixed(2)} total</span>`;
-  return `<div class="card ${isBest?'best-price':''}">
+
+function purchaseGroupCard(group){
+  const latest = group.latest;
+  const isOpen = !!purchaseHistoryOpen[group.name];
+  const freq = avgFrequencyLabel(group.entries);
+  const history = group.entries.slice().reverse(); // newest first
+  return `<div class="card">
     <div class="card-top">
       <div>
-        <div class="card-title">${p.itemName}${isBest ? ' <span class="best-price-badge">Best price</span>' : ''}</div>
-        <div class="card-tags">${typeTag}<span class="tag">${p.vendor}</span><span class="tag">${p.date}</span>${detailTag}</div>
+        <div class="card-title">${group.name}</div>
+        <div class="card-tags">
+          <span class="tag">Purchase</span>
+          <span class="tag">${latest.vendor}</span>
+          <span class="tag">${latest.date}</span>
+          <span class="tag">${latest.quantity} @ $${latest.unitPrice.toFixed(2)}/ea</span>
+          <span class="tag">$${latest.totalPrice.toFixed(2)} total</span>
+          ${freq ? `<span class="tag">${freq}</span>` : ''}
+          ${group.entries.length > 1 ? `<span class="tag history-tag" onclick="toggleHistory('${group.name.replace(/'/g,"\\'")}')">History (${group.entries.length})</span>` : ''}
+        </div>
       </div>
-      ${isAdmin ? `<button class="log-delete" onclick="deletePurchase('${p.id}')">Delete</button>` : ''}
     </div>
-    ${p.notes ? `<div class="card-desc">${p.notes}</div>` : ''}
+    ${latest.notes ? `<div class="card-desc">${latest.notes}</div>` : ''}
     <div class="card-meta">
-      Logged by ${p.purchasedBy} · ${fmtDate(p.purchasedAt)}
-      ${p.receiptUrl ? ` · <a class="receipt-link" href="${p.receiptUrl}" target="_blank" rel="noopener">View link</a>` : ''}
+      Logged by ${latest.purchasedBy} · ${fmtDate(latest.purchasedAt)}
+      ${latest.receiptUrl ? ` · <a class="receipt-link" href="${latest.receiptUrl}" target="_blank" rel="noopener">View link</a>` : ''}
     </div>
+    ${isOpen ? `<div class="history-panel">${history.map(h => `
+      <div class="history-row">
+        <div class="history-row-left">${h.date} · ${h.vendor} · ${h.quantity} @ $${h.unitPrice.toFixed(2)}/ea = $${h.totalPrice.toFixed(2)}</div>
+        ${isAdmin ? `<button class="log-delete" onclick="deletePurchase('${h.id}')">Delete</button>` : ''}
+      </div>`).join('')}</div>` : ''}
   </div>`;
 }
+window.toggleHistory = function(name){ purchaseHistoryOpen[name] = !purchaseHistoryOpen[name]; renderPurchases(); };
+
+function avgFrequencyLabel(entries){
+  if(entries.length < 2) return null;
+  const dates = entries.map(e => new Date(e.date)).filter(d => !isNaN(d)).sort((a,b)=>a-b);
+  if(dates.length < 2) return null;
+  let totalDays = 0;
+  for(let i=1;i<dates.length;i++) totalDays += (dates[i]-dates[i-1])/(1000*60*60*24);
+  const avg = Math.round(totalDays/(dates.length-1));
+  if(avg <= 0) return null;
+  return `Reordered about every ${avg} day${avg===1?'':'s'} on average`;
+}
+
 window.deletePurchase = async function(id){
   if(!confirm('Delete this entry? This does not change inventory counts.')) return;
   try{
