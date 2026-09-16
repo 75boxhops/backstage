@@ -1520,7 +1520,10 @@ function renderPurchases(){
             <div class="compare-row-vendor">${v.vendor} ${v.unitPrice===bestPrice ? '<span class="best-price-badge">Best price</span>' : ''}</div>
             <div class="compare-row-meta">${v.entryType==='price_check'?'Price check':'Purchase'} · ${v.date}</div>
           </div>
-          <div class="compare-row-price">$${v.unitPrice.toFixed(2)}/ea</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="compare-row-price">$${v.unitPrice.toFixed(2)}/ea</div>
+            ${(isAdmin && v.entryType==='price_check') ? `<button class="log-delete" onclick="deletePurchase('${v.id}')">Delete</button>` : ''}
+          </div>
         </div>`).join('')}
     </div>`;
   });
