@@ -501,6 +501,8 @@
     <h3 id="restock-title">Restock item</h3>
     <div class="field"><label>New count</label><input type="number" id="restock-count" min="0"></div>
     <div class="field"><label>Low-stock threshold</label><input type="number" id="restock-threshold" min="0"></div>
+    <div class="field"><label>Par <span class="muted">(target restock-to level, optional)</span></label><input type="number" id="restock-par" min="0"></div>
+    <div class="field"><label>Reorder link <span class="muted">(optional)</span></label><input type="url" id="restock-link" placeholder="https://..."></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" id="restock-cancel">Cancel</button>
       <button class="btn btn-amber" id="restock-save">Save</button>
@@ -518,6 +520,11 @@
       <div class="field"><label>Starting count</label><input type="number" id="add-count" min="0" value="0"></div>
       <div class="field"><label>Low-stock threshold</label><input type="number" id="add-threshold" min="0" value="1"></div>
     </div>
+    <div class="form-row">
+      <div class="field"><label>Unit <span class="muted">(optional, e.g. bottles, rolls)</span></label><input type="text" id="add-unit"></div>
+      <div class="field"><label>Par <span class="muted">(optional)</span></label><input type="number" id="add-par" min="0"></div>
+    </div>
+    <div class="field"><label>Reorder link <span class="muted">(optional)</span></label><input type="url" id="add-link" placeholder="https://..."></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" id="add-cancel">Cancel</button>
       <button class="btn btn-amber" id="add-save">Add item</button>
@@ -562,8 +569,13 @@ const ADMIN_EMAILS = ["events@theseventyfivevenue.com","stay@theboxhop.com","emi
 const DELETE_PIN = "2023";
 const RESOLVED_VISIBLE_DAYS = 30;
 const LOCATIONS = { the75: "The Seventy Five", boxhop: "The Box Hop" };
-const INVENTORY_CATEGORIES = ["BAR","KITCHEN","BRIDE SUITE","GROOM SUITE","BATHROOMS","EQUIPMENT","OFFICE SUPPLIES","CLEANING SUPPLIES","DECORATIONS"];
-const MAINTENANCE_CATEGORIES = ["HVAC","Plumbing","Electrical","Grounds/Landscaping","Structural","Equipment/AV","General Repair"];
+const THE75_CATEGORIES = ["BAR","KITCHEN","BRIDE SUITE","GROOM SUITE","BATHROOMS","EQUIPMENT","OFFICE SUPPLIES","CLEANING SUPPLIES","DECORATIONS"];
+const BOXHOP_CATEGORIES = [
+  "18 ACRES: CLEANING TOTES","18 ACRES: CLOSETS","18 ACRES: GUEST COGS","18 ACRES: CONTAINER STORE","18 ACRES: LINENS & FURNISHINGS",
+  "75 ACRES: CLEANING TOTES","75 ACRES: CLOSETS","75 ACRES: GUEST COGS","75 ACRES: CONTAINER STORE","75 ACRES: LINENS & FURNISHINGS"
+];
+function categoriesForLocation(loc){ return loc==='boxhop' ? BOXHOP_CATEGORIES : THE75_CATEGORIES; }
+const MAINTENANCE_CATEGORIES = ["HVAC","Plumbing","Electrical","Hot Tub","Grounds/Landscaping","Structural","Equipment/AV","General Repair"];
 const PRIORITY_RANK = { "Urgent — can't run an event": 0, "Soon": 1, "Whenever": 2 };
 
 const RECIPIENT_MAP = {
@@ -810,6 +822,176 @@ const SEED_ITEMS = [
   { category: 'DECORATIONS', name: 'Grecian Pillars', count: 4 },
 ];
 
+/* Seed data for The Box Hop, pulled from the MASTER_INVENTORY spreadsheet — 18 Acres and 75 Acres each run their own central supply store serving their 3 cabins. */
+const BOXHOP_SEED_ITEMS = [
+  { category: '18 ACRES: CLEANING TOTES', name: 'Spray Cleaner — All-Purpose', unit: 'bottles', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CLEANING TOTES', name: 'Spray Cleaner — Glass/Windex', unit: 'bottles', count: 0, threshold: 2, par: 3 },
+  { category: '18 ACRES: CLEANING TOTES', name: 'Spray Cleaner — Bathroom/Bleach', unit: 'bottles', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CLEANING TOTES', name: 'Floor Cleaning Solution (concentrate)', unit: 'bottles', count: 0, threshold: null, par: null },
+  { category: '18 ACRES: CLEANING TOTES', name: 'Zote Bar', unit: 'bars', count: 0, threshold: 1, par: 2 },
+  { category: '18 ACRES: CLEANING TOTES', name: 'Toilet Bowl Cleaner / Wand', unit: 'units', count: 0, threshold: 2, par: 3 },
+  { category: '18 ACRES: CLEANING TOTES', name: 'Chlorine', unit: 'bottles', count: 0, threshold: 2, par: 5 },
+  { category: '18 ACRES: CLEANING TOTES', name: 'pH Up', unit: 'bottles', count: 0, threshold: 2, par: 3 },
+  { category: '18 ACRES: CLEANING TOTES', name: 'Defoamer', unit: 'bottles', count: 0, threshold: 1, par: 2 },
+  { category: '18 ACRES: CLEANING TOTES', name: 'Alkalinity Up', unit: 'bottles', count: 0, threshold: 2, par: 3 },
+  { category: '18 ACRES: CLEANING TOTES', name: 'Hot Tub Test Strips', unit: 'units', count: 0, threshold: 2, par: 5 },
+  { category: '18 ACRES: CLOSETS', name: 'Spray Cleaner — All-Purpose REFILL', unit: 'bottles', count: 0, threshold: 2, par: 3 },
+  { category: '18 ACRES: CLOSETS', name: 'Hand Soap REFILL', unit: 'bottles', count: 0, threshold: 2, par: 5 },
+  { category: '18 ACRES: CLOSETS', name: 'Dish Soap REFILL', unit: 'bottles', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CLOSETS', name: 'Shampoo REFILL', unit: 'bottles', count: 0, threshold: 3, par: 6 },
+  { category: '18 ACRES: CLOSETS', name: 'Conditioner REFILL', unit: 'bottles', count: 0, threshold: 3, par: 6 },
+  { category: '18 ACRES: CLOSETS', name: 'Body Wash REFILL', unit: 'bottles', count: 0, threshold: 2, par: 5 },
+  { category: '18 ACRES: CLOSETS', name: 'Trash Bags', unit: 'bags', count: 0, threshold: 9, par: 21 },
+  { category: '18 ACRES: CLOSETS', name: 'Laundry Pods', unit: 'pods', count: 0, threshold: 9, par: 21 },
+  { category: '18 ACRES: CLOSETS', name: 'Dishwasher Pods', unit: 'pods', count: 0, threshold: 9, par: 21 },
+  { category: '18 ACRES: CLOSETS', name: 'Lint Roller', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CLOSETS', name: 'Magic Eraser', unit: 'units', count: 0, threshold: 3, par: 6 },
+  { category: '18 ACRES: CLOSETS', name: 'Dusters', unit: 'units', count: 0, threshold: 2, par: 5 },
+  { category: '18 ACRES: GUEST COGS', name: 'Guest Bags', unit: 'units', count: 0, threshold: 9, par: 17 },
+  { category: '18 ACRES: GUEST COGS', name: 'Batteries (AA)', unit: 'packs', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: GUEST COGS', name: 'Batteries (AAA)', unit: 'packs', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: GUEST COGS', name: 'Fire starters', unit: 'units', count: 0, threshold: 7, par: 17 },
+  { category: '18 ACRES: GUEST COGS', name: 'Matches', unit: 'units', count: 0, threshold: 9, par: 17 },
+  { category: '18 ACRES: GUEST COGS', name: 'Sugar Packets', unit: 'units', count: 0, threshold: 9, par: 17 },
+  { category: '18 ACRES: GUEST COGS', name: 'Creamers', unit: 'units', count: 0, threshold: 9, par: 17 },
+  { category: '18 ACRES: GUEST COGS', name: 'Tea', unit: 'units', count: 0, threshold: 9, par: 17 },
+  { category: '18 ACRES: GUEST COGS', name: 'Salt', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: GUEST COGS', name: 'Pepper', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: GUEST COGS', name: 'Olive Oil', unit: 'units', count: 0, threshold: 1, par: 2 },
+  { category: '18 ACRES: GUEST COGS', name: 'Hygiene Supplies', unit: 'units', count: 0, threshold: 9, par: 17 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Toilet paper', unit: 'rolls', count: 18, threshold: 6, par: 11 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Paper towels', unit: 'rolls', count: 0, threshold: 3, par: 6 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Spray Cleaner — All-Purpose REFILL (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Spray Cleaner — Glass/Windex REFILL (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Spray Cleaner — Bathroom/Bleach REFILL (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Cleaning Solution (concentrate) REFILL (bulk)', unit: 'bottles', count: 0, threshold: 3, par: 8 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Shampoo REFILL BOTTLE (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Conditioner REFILL BOTTLE (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Duster REFILL', unit: 'units', count: 0, threshold: 4, par: 12 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Mop Heads (replacement)', unit: 'units', count: 0, threshold: 3, par: 8 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Toilet Bowl Cleaner / Wand REFILL', unit: 'units', count: 0, threshold: 3, par: 8 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Extra Glass Bottles', unit: 'units', count: 0, threshold: 4, par: 12 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Laundry Pods REFILL TUB', unit: 'tubs', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Dishwasher Pods REFILL TUB', unit: 'tubs', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Trash Bags REFILL BOX', unit: 'boxes', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Chlorine REFILL', unit: 'units', count: 0, threshold: 2, par: 6 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'pH Up REFILL', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Defoamer REFILL', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Alkalinity Up REFILL', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Hot Tub Test Strips REFILL', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Salt REFILL BAG', unit: 'bags', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Pepper REFILL BAG', unit: 'bags', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Olive Oil REFILL BOTTLE', unit: 'bottles', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Hygiene Supplies REFILLS', unit: 'units', count: 0, threshold: 4, par: 12 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Hand Soap REFILL BOTTLE (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Dish Soap REFILL BOTTLE (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Lint Roller REFILLS', unit: 'units', count: 0, threshold: 3, par: 8 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Zote Bar REFILLS', unit: 'bars', count: 0, threshold: 3, par: 8 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Magic Eraser REFILLS', unit: 'units', count: 0, threshold: 4, par: 12 },
+  { category: '18 ACRES: CONTAINER STORE', name: 'Guest Bags — Universal', unit: 'units', count: 0, threshold: 10, par: 30 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Sheet Sets - Twin', unit: 'sets', count: 0, threshold: 3, par: 5 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Sheet Sets - Full', unit: 'sets', count: 0, threshold: 12, par: 24 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Sheet Sets - Queen', unit: 'sets', count: 0, threshold: 2, par: 6 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Sheet Sets - King', unit: 'sets', count: 0, threshold: 1, par: 2 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Pillowcases - Standard', unit: 'units', count: 0, threshold: 9, par: 18 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Pillowcases - King', unit: 'units', count: 0, threshold: 5, par: 9 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Duvets - Full', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Duvet - Queen', unit: 'units', count: 0, threshold: 1, par: 2 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Duvets - King', unit: 'units', count: 0, threshold: 1, par: 2 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Bath towels — white', unit: 'units', count: 0, threshold: 18, par: 36 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Pool towels - gray', unit: 'units', count: 0, threshold: 9, par: 18 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Hand towels', unit: 'units', count: 0, threshold: 14, par: 27 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Wash Cloths', unit: 'units', count: 0, threshold: 12, par: 24 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Make Up Wash Cloths', unit: 'units', count: 0, threshold: 5, par: 9 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Kitchen Towels', unit: 'units', count: 0, threshold: 12, par: 24 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Bath Mats', unit: 'units', count: 0, threshold: 2, par: 6 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Light Bulbs', unit: 'units', count: 0, threshold: 1, par: 2 },
+  { category: '18 ACRES: LINENS & FURNISHINGS', name: 'Pots and Pans Replacements', unit: 'units', count: 0, threshold: 2, par: 6 },
+  { category: '75 ACRES: CLEANING TOTES', name: 'Spray Cleaner — All-Purpose', unit: 'bottles', count: 0, threshold: 2, par: 5 },
+  { category: '75 ACRES: CLEANING TOTES', name: 'Spray Cleaner — Glass/Windex', unit: 'bottles', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CLEANING TOTES', name: 'Spray Cleaner — Bathroom/Bleach', unit: 'bottles', count: 0, threshold: 2, par: 5 },
+  { category: '75 ACRES: CLEANING TOTES', name: 'Cleaning Solution (concentrate)', unit: 'bottles', count: 0, threshold: 2, par: 3 },
+  { category: '75 ACRES: CLEANING TOTES', name: 'Zote Bar', unit: 'bars', count: 0, threshold: 2, par: 3 },
+  { category: '75 ACRES: CLEANING TOTES', name: 'Toilet Bowl Cleaner / Wand', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CLEANING TOTES', name: 'Chlorine', unit: 'bottles', count: 0, threshold: 3, par: 6 },
+  { category: '75 ACRES: CLEANING TOTES', name: 'pH Up', unit: 'bottles', count: 0, threshold: 2, par: 3 },
+  { category: '75 ACRES: CLEANING TOTES', name: 'Defoamer', unit: 'bottles', count: 0, threshold: 1, par: 2 },
+  { category: '75 ACRES: CLEANING TOTES', name: 'Alkalinity Up', unit: 'bottles', count: 0, threshold: 2, par: 3 },
+  { category: '75 ACRES: CLEANING TOTES', name: 'Hot Tub Test Strips', unit: 'units', count: 0, threshold: 3, par: 6 },
+  { category: '75 ACRES: CLOSETS', name: 'Spray Cleaner — All-Purpose REFILL', unit: 'bottles', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CLOSETS', name: 'Hand Soap REFILL', unit: 'bottles', count: 0, threshold: 3, par: 7 },
+  { category: '75 ACRES: CLOSETS', name: 'Dish Soap REFILL', unit: 'bottles', count: 0, threshold: 2, par: 5 },
+  { category: '75 ACRES: CLOSETS', name: 'Shampoo REFILL', unit: 'bottles', count: 0, threshold: 4, par: 9 },
+  { category: '75 ACRES: CLOSETS', name: 'Conditioner REFILL', unit: 'bottles', count: 0, threshold: 4, par: 9 },
+  { category: '75 ACRES: CLOSETS', name: 'Body Wash REFILL', unit: 'bottles', count: 0, threshold: 3, par: 7 },
+  { category: '75 ACRES: CLOSETS', name: 'Trash Bags', unit: 'bags', count: 0, threshold: 11, par: 27 },
+  { category: '75 ACRES: CLOSETS', name: 'Laundry Pods', unit: 'pods', count: 0, threshold: 11, par: 27 },
+  { category: '75 ACRES: CLOSETS', name: 'Dishwasher Pods', unit: 'pods', count: 0, threshold: 11, par: 27 },
+  { category: '75 ACRES: CLOSETS', name: 'Lint Roller', unit: 'units', count: 0, threshold: 2, par: 5 },
+  { category: '75 ACRES: CLOSETS', name: 'Magic Eraser', unit: 'units', count: 0, threshold: 3, par: 7 },
+  { category: '75 ACRES: CLOSETS', name: 'Dusters', unit: 'units', count: 0, threshold: 3, par: 6 },
+  { category: '75 ACRES: GUEST COGS', name: 'Guest Bags', unit: 'units', count: 0, threshold: 11, par: 21 },
+  { category: '75 ACRES: GUEST COGS', name: 'Batteries (AA)', unit: 'packs', count: 0, threshold: 3, par: 5 },
+  { category: '75 ACRES: GUEST COGS', name: 'Batteries (AAA)', unit: 'packs', count: 0, threshold: 3, par: 5 },
+  { category: '75 ACRES: GUEST COGS', name: 'Fire starters', unit: 'units', count: 0, threshold: 9, par: 21 },
+  { category: '75 ACRES: GUEST COGS', name: 'Matches', unit: 'units', count: 0, threshold: 11, par: 21 },
+  { category: '75 ACRES: GUEST COGS', name: 'Sugar Packets', unit: 'units', count: 0, threshold: 11, par: 21 },
+  { category: '75 ACRES: GUEST COGS', name: 'Creamers', unit: 'units', count: 0, threshold: 11, par: 21 },
+  { category: '75 ACRES: GUEST COGS', name: 'Tea', unit: 'units', count: 0, threshold: 11, par: 21 },
+  { category: '75 ACRES: GUEST COGS', name: 'Salt', unit: 'units', count: 0, threshold: 3, par: 5 },
+  { category: '75 ACRES: GUEST COGS', name: 'Pepper', unit: 'units', count: 0, threshold: 3, par: 5 },
+  { category: '75 ACRES: GUEST COGS', name: 'Olive Oil', unit: 'units', count: 0, threshold: 2, par: 3 },
+  { category: '75 ACRES: GUEST COGS', name: 'Hygiene Supplies', unit: 'units', count: 0, threshold: 11, par: 21 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Toilet paper', unit: 'rolls', count: 19, threshold: 9, par: 17 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Paper towels', unit: 'rolls', count: 7, threshold: 5, par: 9 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Spray Cleaner — All-Purpose REFILL (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Spray Cleaner — Glass/Windex REFILL (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Spray Cleaner — Bathroom/Bleach REFILL (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Cleaning Solution (concentrate) REFILL (bulk)', unit: 'bottles', count: 0, threshold: 3, par: 8 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Shampoo REFILL BOTTLE (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Conditioner REFILL BOTTLE (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Duster REFILL', unit: 'units', count: 0, threshold: 4, par: 12 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Mop Heads (replacement)', unit: 'units', count: 0, threshold: 3, par: 8 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Toilet Bowl Cleaner / Wand REFILL', unit: 'units', count: 0, threshold: 3, par: 8 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Extra Glass Bottles', unit: 'units', count: 0, threshold: 4, par: 12 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Laundry Pods REFILL TUB', unit: 'tubs', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Dishwasher Pods REFILL TUB', unit: 'tubs', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Trash Bags REFILL BOX', unit: 'boxes', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Chlorine REFILL', unit: 'units', count: 0, threshold: 2, par: 6 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'pH Up REFILL', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Defoamer REFILL', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Alkalinity Up REFILL', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Hot Tub Test Strips REFILL', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Salt REFILL BAG', unit: 'bags', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Pepper REFILL BAG', unit: 'bags', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Olive Oil REFILL BOTTLE', unit: 'bottles', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Hygiene Supplies REFILLS', unit: 'units', count: 0, threshold: 4, par: 12 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Hand Soap REFILL BOTTLE (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Dish Soap REFILL BOTTLE (bulk)', unit: 'bottles', count: 0, threshold: 4, par: 12 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Lint Roller REFILLS', unit: 'units', count: 0, threshold: 3, par: 8 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Zote Bar REFILLS', unit: 'bars', count: 0, threshold: 3, par: 8 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Magic Eraser REFILLS', unit: 'units', count: 0, threshold: 4, par: 12 },
+  { category: '75 ACRES: CONTAINER STORE', name: 'Guest Bags — Universal', unit: 'units', count: 0, threshold: 10, par: 30 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Sheet Sets - Twin', unit: 'sets', count: 0, threshold: 3, par: 5 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Sheet Sets - Full', unit: 'sets', count: 0, threshold: 12, par: 24 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Sheet Sets - Queen', unit: 'sets', count: 0, threshold: 2, par: 6 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Sheet Sets - King', unit: 'sets', count: 0, threshold: 1, par: 2 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Pillowcases - Standard', unit: 'units', count: 0, threshold: 9, par: 18 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Pillowcases - King', unit: 'units', count: 0, threshold: 5, par: 9 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Duvets - Full', unit: 'units', count: 0, threshold: 2, par: 4 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Duvet - Queen', unit: 'units', count: 0, threshold: 1, par: 2 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Duvets - King', unit: 'units', count: 0, threshold: 1, par: 2 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Bath towels — white', unit: 'units', count: 0, threshold: 18, par: 36 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Pool towels - gray', unit: 'units', count: 0, threshold: 9, par: 18 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Hand towels', unit: 'units', count: 0, threshold: 14, par: 27 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Wash Cloths', unit: 'units', count: 0, threshold: 12, par: 24 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Make Up Wash Cloths', unit: 'units', count: 0, threshold: 5, par: 9 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Kitchen Towels', unit: 'units', count: 0, threshold: 12, par: 24 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Bath Mats', unit: 'units', count: 0, threshold: 2, par: 6 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Light Bulbs', unit: 'units', count: 0, threshold: 1, par: 2 },
+  { category: '75 ACRES: LINENS & FURNISHINGS', name: 'Pots and Pans Replacements', unit: 'units', count: 0, threshold: 2, par: 6 },
+];
+
 /* ============================================================ STATE ============================================================ */
 let currentUser = null, isAdmin = false, currentLocation = 'the75', currentTab = 'inventory', appInited = false;
 let itemsCache = [], maintenanceCache = [], requestsCache = [], wishlistCache = [], messagesCache = [], damagelogCache = [], purchasesCache = [];
@@ -898,7 +1080,6 @@ auth.onAuthStateChanged(user=>{
 function initApp(){
   if(appInited) return; appInited = true;
   populateSelect($('maint-category'), MAINTENANCE_CATEGORIES);
-  populateSelect($('add-category'), INVENTORY_CATEGORIES);
   document.querySelectorAll('nav.tabs button').forEach(btn=> btn.addEventListener('click', ()=> setTab(btn.dataset.tab)));
 }
 function populateSelect(sel, arr){ sel.innerHTML = arr.map(v=>`<option value="${v}">${v}</option>`).join(''); }
@@ -915,6 +1096,7 @@ function setLocation(loc){
   currentLocation = loc;
   document.body.setAttribute('data-theme', loc==='boxhop'?'boxhop':'the75');
   $('location-tag').textContent = LOCATIONS[loc];
+  populateSelect($('add-category'), categoriesForLocation(loc));
   invSearchTerm=''; invLowOnly=false; $('inv-search').value=''; $('inv-low-only').checked=false;
   categoryCollapsed = {};
   clearDamageSelection();
@@ -974,8 +1156,10 @@ function renderInventory(){
   $('low-stock-alert').innerHTML = flagged.length
     ? `<div class="alert-banner"><strong>${flagged.length} item${flagged.length===1?'':'s'}</strong> low or out at ${LOCATIONS[currentLocation]}.</div>` : '';
 
-  if(isAdmin && currentLocation==='the75' && itemsCache.length===0){
-    $('seed-area').innerHTML = `<div class="seed-box"><strong>No items yet for The Seventy Five.</strong> Import the ${SEED_ITEMS.length} items and last known counts from the 2026 inventory spreadsheet to get started.
+  if(isAdmin && itemsCache.length===0 && (currentLocation==='the75' || currentLocation==='boxhop')){
+    const seedList = currentLocation==='the75' ? SEED_ITEMS : BOXHOP_SEED_ITEMS;
+    const seedLabel = currentLocation==='the75' ? 'The Seventy Five' : 'The Box Hop (18 Acres & 75 Acres stores)';
+    $('seed-area').innerHTML = `<div class="seed-box"><strong>No items yet for ${seedLabel}.</strong> Import the ${seedList.length} items and starting par/reorder levels from the spreadsheet to get started.
       <div style="margin-top:10px;"><button class="btn btn-amber btn-sm" id="seed-btn">Import starter inventory</button></div></div>`;
     $('seed-btn').addEventListener('click', seedInventory);
   } else { $('seed-area').innerHTML = ''; }
@@ -1004,9 +1188,12 @@ function renderInventory(){
       const status = itemStatus(item);
       const badge = status==='ok'?'<span class="status-badge status-ok">OK</span>':status==='low'?'<span class="status-badge status-low">Low</span>':'<span class="status-badge status-out">Out</span>';
       const meta = item.lastUpdatedBy ? `Last updated by ${item.lastUpdatedBy} · ${fmtDate(item.lastUpdatedAt)}` : 'Not yet updated';
+      const unitLabel = item.unit ? ' ' + item.unit : '';
+      const parNote = item.par!=null ? ` · par ${item.par}` : '';
+      const buyLink = item.reorderLink ? ` · <a class="receipt-link" href="${item.reorderLink}" target="_blank" rel="noopener">Buy</a>` : '';
       html += `<div class="item-card">
-        <div class="item-info"><div class="item-name">${item.name} ${badge}</div><div class="item-meta">${meta}${item.threshold!=null?' · alert below '+item.threshold:''}</div></div>
-        <div class="item-count">${item.count}</div>
+        <div class="item-info"><div class="item-name">${item.name} ${badge}</div><div class="item-meta">${meta}${item.threshold!=null?' · alert below '+item.threshold:''}${parNote}${buyLink}</div></div>
+        <div class="item-count">${item.count}<span class="item-meta" style="display:block;font-size:11px;text-align:right;">${unitLabel}</span></div>
         <div class="item-actions">
           ${isAdmin ? `<button class="btn btn-amber btn-sm" onclick="openRestockModal('${item.id}')">Restock</button>` : ''}
           ${isAdmin ? `<button class="btn btn-danger btn-sm" onclick="openDeleteModal('${item.id}')">Delete</button>` : ''}
@@ -1021,18 +1208,22 @@ $('inv-search').addEventListener('input', e=>{ invSearchTerm=e.target.value; ren
 $('inv-low-only').addEventListener('change', e=>{ invLowOnly=e.target.checked; renderInventory(); });
 
 async function seedInventory(){
-  const chunks=[]; for(let i=0;i<SEED_ITEMS.length;i+=400) chunks.push(SEED_ITEMS.slice(i,i+400));
+  const seedList = currentLocation==='the75' ? SEED_ITEMS : BOXHOP_SEED_ITEMS;
+  const chunks=[]; for(let i=0;i<seedList.length;i+=400) chunks.push(seedList.slice(i,i+400));
   try{
     for(const chunk of chunks){
       const batch = db.batch();
       chunk.forEach(it=>{
         const ref = db.collection('items').doc();
-        const threshold = Math.max(1, Math.round(it.count*0.15));
-        batch.set(ref, { location:'the75', category:it.category, name:it.name, count:it.count, threshold, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+        const threshold = it.threshold != null ? it.threshold : Math.max(1, Math.round(it.count*0.15));
+        const docData = { location: currentLocation, category:it.category, name:it.name, count:it.count, threshold, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+        if(it.unit) docData.unit = it.unit;
+        if(it.par != null) docData.par = it.par;
+        batch.set(ref, docData);
       });
       await batch.commit();
     }
-    showToast('Starter inventory imported. Review thresholds when you get a chance.');
+    showToast('Starter inventory imported. Review pars and reorder points when you get a chance.');
   }catch(err){ console.error(err); showToast('Import failed — check console.'); }
 }
 
@@ -1040,14 +1231,23 @@ window.openRestockModal = function(itemId){
   restockTargetItem = itemsCache.find(i=>i.id===itemId);
   $('restock-title').textContent = 'Restock — ' + restockTargetItem.name;
   $('restock-count').value = restockTargetItem.count; $('restock-threshold').value = restockTargetItem.threshold ?? 0;
+  $('restock-par').value = restockTargetItem.par ?? '';
+  $('restock-link').value = restockTargetItem.reorderLink ?? '';
   $('restock-backdrop').classList.add('open');
 };
 $('restock-cancel').addEventListener('click', ()=> $('restock-backdrop').classList.remove('open'));
 $('restock-save').addEventListener('click', async ()=>{
   if(!restockTargetItem) return;
   const count=parseInt($('restock-count').value||'0',10), threshold=parseInt($('restock-threshold').value||'0',10);
+  const parVal = $('restock-par').value.trim();
+  const linkVal = $('restock-link').value.trim();
   try{
-    await db.collection('items').doc(restockTargetItem.id).update({ count, threshold, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    await db.collection('items').doc(restockTargetItem.id).update({
+      count, threshold,
+      par: parVal ? parseInt(parVal,10) : firebase.firestore.FieldValue.delete(),
+      reorderLink: linkVal || firebase.firestore.FieldValue.delete(),
+      lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
     showToast('Restocked.'); $('restock-backdrop').classList.remove('open');
   }catch(err){ console.error(err); showToast('Could not save — try again.'); }
 });
@@ -1056,10 +1256,17 @@ $('add-cancel').addEventListener('click', ()=> $('add-backdrop').classList.remov
 $('add-save').addEventListener('click', async ()=>{
   const category=$('add-category').value, name=$('add-name').value.trim();
   const count=parseInt($('add-count').value||'0',10), threshold=parseInt($('add-threshold').value||'1',10);
+  const unit = $('add-unit').value.trim();
+  const par = $('add-par').value.trim();
+  const link = $('add-link').value.trim();
   if(!name) return showToast('Give the item a name.');
   try{
-    await db.collection('items').add({ location:currentLocation, category, name, count, threshold, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-    showToast('Item added.'); $('add-name').value=''; $('add-count').value=0; $('add-threshold').value=1;
+    const docData = { location:currentLocation, category, name, count, threshold, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+    if(unit) docData.unit = unit;
+    if(par) docData.par = parseInt(par,10);
+    if(link) docData.reorderLink = link;
+    await db.collection('items').add(docData);
+    showToast('Item added.'); $('add-name').value=''; $('add-count').value=0; $('add-threshold').value=1; $('add-unit').value=''; $('add-par').value=''; $('add-link').value='';
     $('add-backdrop').classList.remove('open');
   }catch(err){ console.error(err); showToast('Could not save — try again.'); }
 });
