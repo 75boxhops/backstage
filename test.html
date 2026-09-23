@@ -104,6 +104,10 @@
   .low-only-toggle{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-soft);white-space:nowrap;}
   .low-only-toggle input{width:16px;height:16px;}
 
+  .store-split{display:flex;gap:28px;align-items:flex-start;}
+  .store-col{flex:1;min-width:0;}
+  .store-col-title{font-family:'Fraunces',serif;font-size:16px;font-weight:600;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--amber);color:var(--ink);}
+  @media (max-width:800px){ .store-split{flex-direction:column;} }
   .cat-group{margin-bottom:18px;}
   .cat-title{font-size:13.5px;font-weight:700;letter-spacing:0.01em;color:var(--ink-soft);padding:10px 4px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;user-select:none;}
   .cat-title:hover{color:var(--ink);}
@@ -1175,13 +1179,13 @@ function renderInventory(){
   const byCat = {}; visible.forEach(i=> (byCat[i.category]=byCat[i.category]||[]).push(i));
   const cats = Object.keys(byCat).sort();
   const searching = term || invLowOnly;
-  let html='';
-  cats.forEach(cat=>{
+
+  function categoryHtml(cat){
     const items = byCat[cat].sort((a,b)=>{ const r=STATUS_RANK[itemStatus(a)]-STATUS_RANK[itemStatus(b)]; return r!==0?r:a.name.localeCompare(b.name); });
     const catFlagged = items.some(i=> itemStatus(i)!=='ok');
     if(!(cat in categoryCollapsed)) categoryCollapsed[cat] = true;
     const isCollapsed = searching ? false : categoryCollapsed[cat];
-    html += `<div class="cat-group ${isCollapsed?'collapsed':''}" data-cat="${cat}">
+    let h = `<div class="cat-group ${isCollapsed?'collapsed':''}" data-cat="${cat}">
       <div class="cat-title" onclick="toggleCategory('${cat}')"><span class="cat-left"><span class="cat-chevron">▾</span> ${cat} <span class="cat-count">(${items.length})</span>${catFlagged?'<span class="cat-flag-dot"></span>':''}</span></div>
       <div class="cat-items">`;
     items.forEach(item=>{
@@ -1191,7 +1195,7 @@ function renderInventory(){
       const unitLabel = item.unit ? ' ' + item.unit : '';
       const parNote = item.par!=null ? ` · par ${item.par}` : '';
       const buyLink = item.reorderLink ? ` · <a class="receipt-link" href="${item.reorderLink}" target="_blank" rel="noopener">Buy</a>` : '';
-      html += `<div class="item-card">
+      h += `<div class="item-card">
         <div class="item-info"><div class="item-name">${item.name} ${badge}</div><div class="item-meta">${meta}${item.threshold!=null?' · alert below '+item.threshold:''}${parNote}${buyLink}</div></div>
         <div class="item-count">${item.count}<span class="item-meta" style="display:block;font-size:11px;text-align:right;">${unitLabel}</span></div>
         <div class="item-actions">
@@ -1199,9 +1203,25 @@ function renderInventory(){
           ${isAdmin ? `<button class="btn btn-danger btn-sm" onclick="openDeleteModal('${item.id}')">Delete</button>` : ''}
         </div></div>`;
     });
-    html += `</div></div>`;
-  });
-  $('inventory-list').innerHTML = html;
+    h += `</div></div>`;
+    return h;
+  }
+
+  if(currentLocation === 'boxhop'){
+    const cats18 = cats.filter(c => c.startsWith('18 ACRES'));
+    const cats75 = cats.filter(c => c.startsWith('75 ACRES'));
+    const other = cats.filter(c => !c.startsWith('18 ACRES') && !c.startsWith('75 ACRES'));
+    let colHtml18 = cats18.map(categoryHtml).join('') || `<div class="empty-state">No matches.</div>`;
+    let colHtml75 = cats75.map(categoryHtml).join('') || `<div class="empty-state">No matches.</div>`;
+    let extra = other.map(categoryHtml).join('');
+    $('inventory-list').innerHTML = `
+      <div class="store-split">
+        <div class="store-col"><div class="store-col-title">18 Acres</div>${colHtml18}</div>
+        <div class="store-col"><div class="store-col-title">75 Acres</div>${colHtml75}</div>
+      </div>${extra}`;
+  } else {
+    $('inventory-list').innerHTML = cats.map(categoryHtml).join('');
+  }
 }
 window.toggleCategory = function(cat){ categoryCollapsed[cat]=!categoryCollapsed[cat]; renderInventory(); };
 $('inv-search').addEventListener('input', e=>{ invSearchTerm=e.target.value; renderInventory(); });
