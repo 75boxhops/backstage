@@ -303,8 +303,8 @@
     <button data-tab="inventory" class="active">Total Inventory</button>
     <button data-tab="damagelog">Broken/Damage Log</button>
     <button data-tab="maintenance">Maintenance <span class="count-chip" id="maint-chip" style="display:none;">0</span></button>
-    <button data-tab="requests">Event Requests <span class="count-chip" id="req-chip" style="display:none;">0</span></button>
-    <button data-tab="wishlist">Venue Wishlist</button>
+    <button data-tab="requests"><span id="requests-tab-label">Event Requests</span> <span class="count-chip" id="req-chip" style="display:none;">0</span></button>
+    <button data-tab="wishlist">Wishlist</button>
     <button data-tab="messages">Message to Management</button>
     <button data-tab="purchases" id="purchases-tab-btn" style="display:none;">Purchases &amp; Receipts</button>
   </nav>
@@ -330,6 +330,10 @@
 
       <div class="fab-form">
         <h3>Log a used or broken item</h3>
+        <div class="field" id="dmg-house-field" style="display:none;">
+          <label>Which house</label>
+          <select id="dmg-house"><option value="">Select a house…</option></select>
+        </div>
         <div class="field">
           <label>Item</label>
           <div class="search-wrap">
@@ -344,10 +348,13 @@
           </div>
           <div class="field"><label>Quantity</label><input type="number" id="dmg-qty" min="1" value="1"></div>
         </div>
-        <div class="field"><label>Event <span class="muted">(optional)</span></label><input type="text" id="dmg-event" placeholder="e.g. Britt Wedding"></div>
+        <div class="field"><label id="dmg-event-label">Event <span class="muted">(optional)</span></label><input type="text" id="dmg-event" placeholder="e.g. Britt Wedding"></div>
         <button type="button" class="btn btn-amber" id="dmg-submit">Add to log</button>
       </div>
 
+      <div class="inv-toolbar" id="dmg-filter-row" style="display:none;">
+        <select id="dmg-house-filter"><option value="">All houses</option></select>
+      </div>
       <div id="damagelog-list"></div>
     </div>
 
@@ -357,11 +364,12 @@
       <div class="fab-form">
         <h3>Report an issue</h3>
         <form id="maintenance-form">
+          <div class="form-row" id="maint-house-row" style="display:none;">
+            <div class="field"><label>Which house</label><select id="maint-house"></select></div>
+          </div>
           <div class="form-row">
             <div class="field"><label>Category</label><select id="maint-category"></select></div>
-            <div class="field"><label>Priority</label>
-              <select id="maint-priority" required><option>Urgent — can't run an event</option><option>Soon</option><option>Whenever</option></select>
-            </div>
+            <div class="field"><label>Priority</label><select id="maint-priority" required></select></div>
             <div class="field"><label>Who handles it</label>
               <select id="maint-handler" required><option>In-house team</option><option>Outside vendor</option><option>Not sure</option></select>
             </div>
@@ -373,23 +381,29 @@
       <div id="maintenance-list"></div>
     </div>
 
-    <!-- ---- EVENT REQUESTS ---- -->
+    <!-- ---- REQUESTS ---- -->
     <div id="tab-requests" style="display:none;">
-      <div class="section-head"><h2>Event Requests</h2></div>
+      <div class="section-head"><h2 id="requests-heading">Event Requests</h2></div>
       <div class="fab-form">
-        <h3>Request an item</h3>
+        <h3 id="req-form-heading">Request an item</h3>
         <form id="request-form">
-          <div class="field"><label>What's needed</label><textarea id="req-description" rows="2" required placeholder="e.g. Need the large wooden cross for Saturday's wedding"></textarea></div>
-          <div class="form-row"><div class="field"><label>Event / stay date <span class="muted">(optional)</span></label><input type="date" id="req-date"></div></div>
+          <div class="field"><label id="req-description-label">What's needed</label><textarea id="req-description" rows="2" required placeholder="e.g. Need the large wooden cross for Saturday's wedding"></textarea></div>
+          <div class="form-row"><div class="field"><label id="req-date-label">Event / stay date <span class="muted">(optional)</span></label><input type="date" id="req-date"></div></div>
+          <div class="field">
+            <label class="low-only-toggle"><input type="checkbox" id="req-paid"> This was paid for</label>
+          </div>
+          <div class="field" id="req-amount-field" style="display:none;">
+            <label>Amount ($)</label><input type="number" id="req-amount" min="0" step="0.01">
+          </div>
           <button type="submit" class="btn btn-amber">Submit request</button>
         </form>
       </div>
       <div id="requests-list"></div>
     </div>
 
-    <!-- ---- VENUE WISHLIST ---- -->
+    <!-- ---- WISHLIST ---- -->
     <div id="tab-wishlist" style="display:none;">
-      <div class="section-head"><h2>Venue Wishlist</h2></div>
+      <div class="section-head"><h2>Wishlist</h2></div>
       <div class="fab-form">
         <h3>Add something we should get eventually</h3>
         <form id="wishlist-form">
@@ -409,12 +423,7 @@
         <form id="message-form">
           <div class="form-row">
             <div class="field"><label>Send to</label>
-              <select id="msg-recipient" required>
-                <option value="Jess">Jess</option>
-                <option value="Emily">Emily</option>
-                <option value="Seth">Seth</option>
-                <option value="All">All management</option>
-              </select>
+              <select id="msg-recipient" required></select>
             </div>
             <div class="field"><label>Type</label>
               <select id="msg-type" required>
@@ -444,7 +453,10 @@
       <div class="msg-filter"><select id="msg-type-filter">
         <option value="">All types</option><option>Suggestion</option><option>Complaint</option><option>Call-out</option><option>Meeting request</option>
       </select></div>
-      <div id="messages-list"></div>
+      <div class="store-split">
+        <div class="store-col"><div class="store-col-title">The Seventy Five</div><div id="messages-list-the75"></div></div>
+        <div class="store-col"><div class="store-col-title">The Box Hop</div><div id="messages-list-boxhop"></div></div>
+      </div>
     </div>
 
     <!-- ---- PURCHASES & RECEIPTS ---- -->
@@ -459,6 +471,13 @@
           <select id="pur-type">
             <option value="purchase">Purchase (we bought it)</option>
             <option value="price_check">Price check (just checking, didn't buy)</option>
+          </select>
+        </div>
+        <div class="field" id="pur-property-field" style="display:none;">
+          <label>Property</label>
+          <select id="pur-property">
+            <option value="18 ACRES">18 Acres</option>
+            <option value="75 ACRES">75 Acres</option>
           </select>
         </div>
         <div class="field">
@@ -580,13 +599,27 @@ const BOXHOP_CATEGORIES = [
 ];
 function categoriesForLocation(loc){ return loc==='boxhop' ? BOXHOP_CATEGORIES : THE75_CATEGORIES; }
 const MAINTENANCE_CATEGORIES = ["HVAC","Plumbing","Electrical","Hot Tub","Grounds/Landscaping","Structural","Equipment/AV","General Repair"];
-const PRIORITY_RANK = { "Urgent — can't run an event": 0, "Soon": 1, "Whenever": 2 };
+function priorityRank(p){ if(!p) return 9; if(p.startsWith('Urgent')) return 0; if(p==='Soon') return 1; if(p==='Whenever') return 2; return 9; }
+const PRIORITY_OPTIONS = {
+  the75: ["Urgent — can't run an event","Soon","Whenever"],
+  boxhop: ["Urgent — affects a guest currently staying","Soon","Whenever"]
+};
 
-const RECIPIENT_MAP = {
-  "Jess": ["jess@theseventyfivevenue.com"],
-  "Emily": ["emily@theboxhop.com"],
-  "Seth": ["seth@theboxhop.com"],
-  "All": ADMIN_EMAILS.slice()
+const HOUSE_LIST = ["The OG","The Hygge","The Boho","The Ellwood","The Overlook","The Roca"];
+const HOUSE_TO_STORE = { "The OG":"18 ACRES","The Hygge":"18 ACRES","The Boho":"18 ACRES","The Ellwood":"75 ACRES","The Overlook":"75 ACRES","The Roca":"75 ACRES" };
+
+const RECIPIENT_OPTIONS = {
+  the75: {
+    "Jess": ["jess@theseventyfivevenue.com"],
+    "Emily": ["emily@theboxhop.com"],
+    "Seth": ["seth@theboxhop.com"],
+    "All": ["jess@theseventyfivevenue.com","emily@theboxhop.com","seth@theboxhop.com","events@theseventyfivevenue.com"]
+  },
+  boxhop: {
+    "Emily": ["emily@theboxhop.com"],
+    "Seth": ["seth@theboxhop.com"],
+    "All": ["emily@theboxhop.com","seth@theboxhop.com","stay@theboxhop.com"]
+  }
 };
 const RECIPIENT_NAME = { "jess@theseventyfivevenue.com":"Jess", "emily@theboxhop.com":"Emily", "seth@theboxhop.com":"Seth" };
 const TYPE_PLACEHOLDERS = {
@@ -1003,6 +1036,8 @@ let unsubItems=null, unsubMaint=null, unsubReq=null, unsubWish=null, unsubMsg=nu
 let restockTargetItem = null, deleteTargetItem = null, selectedDamageItem = null, selectedPurchaseItem = null;
 let categoryCollapsed = {};
 let purchaseHistoryOpen = {};
+let dmgSelectedHouse = '';
+let dmgHouseFilter = '';
 let invSearchTerm = '', invLowOnly = false, msgTypeFilter = '';
 
 const $ = (id) => document.getElementById(id);
@@ -1098,12 +1133,56 @@ function setTab(tab){
 }
 function setLocation(loc){
   currentLocation = loc;
-  document.body.setAttribute('data-theme', loc==='boxhop'?'boxhop':'the75');
+  const isBoxhop = loc==='boxhop';
+  document.body.setAttribute('data-theme', isBoxhop?'boxhop':'the75');
   $('location-tag').textContent = LOCATIONS[loc];
   populateSelect($('add-category'), categoriesForLocation(loc));
   invSearchTerm=''; invLowOnly=false; $('inv-search').value=''; $('inv-low-only').checked=false;
   categoryCollapsed = {};
   clearDamageSelection();
+
+  // Maintenance: house field + wording
+  $('maint-house-row').style.display = isBoxhop ? 'flex' : 'none';
+  if(isBoxhop) $('maint-house').innerHTML = `<option value="">Select a house…</option>` + HOUSE_LIST.map(h=>`<option value="${h}">${h}</option>`).join('');
+  populateSelect($('maint-priority'), PRIORITY_OPTIONS[loc]);
+
+  // Damage log: house field + filter + wording
+  $('dmg-house-field').style.display = isBoxhop ? 'block' : 'none';
+  $('dmg-filter-row').style.display = isBoxhop ? 'flex' : 'none';
+  if(isBoxhop){
+    $('dmg-house').innerHTML = `<option value="">Select a house…</option>` + HOUSE_LIST.map(h=>`<option value="${h}">${h}</option>`).join('');
+    $('dmg-house-filter').innerHTML = `<option value="">All houses</option>` + HOUSE_LIST.map(h=>`<option value="${h}">${h}</option>`).join('');
+    $('dmg-event-label').innerHTML = 'Guest / stay <span class="muted">(optional)</span>';
+    $('dmg-event').placeholder = 'e.g. Smith family stay';
+  } else {
+    $('dmg-event-label').innerHTML = 'Event <span class="muted">(optional)</span>';
+    $('dmg-event').placeholder = 'e.g. Britt Wedding';
+  }
+  dmgSelectedHouse = ''; dmgHouseFilter = '';
+
+  // Requests: wording + tab label
+  const reqLabel = isBoxhop ? 'Stay Requests' : 'Event Requests';
+  $('requests-tab-label').textContent = reqLabel;
+  $('requests-heading').textContent = reqLabel;
+  if(isBoxhop){
+    $('req-form-heading').textContent = 'Request something for a stay';
+    $('req-description-label').textContent = "What's needed";
+    $('req-description').placeholder = 'e.g. Late checkout requested for the Smith stay';
+    $('req-date-label').innerHTML = 'Stay date <span class="muted">(optional)</span>';
+  } else {
+    $('req-form-heading').textContent = 'Request an item';
+    $('req-description-label').textContent = "What's needed";
+    $('req-description').placeholder = "e.g. Need the large wooden cross for Saturday's wedding";
+    $('req-date-label').innerHTML = 'Event date <span class="muted">(optional)</span>';
+  }
+
+  // Messages: recipient options
+  populateSelect($('msg-recipient'), Object.keys(RECIPIENT_OPTIONS[loc]).map(k=> k==='All' ? 'All management' : k).map(x=>x));
+  $('msg-recipient').innerHTML = Object.keys(RECIPIENT_OPTIONS[loc]).map(k=> `<option value="${k}">${k==='All'?'All management':k}</option>`).join('');
+
+  // Purchases: property field
+  $('pur-property-field').style.display = isBoxhop ? 'block' : 'none';
+
   setTab('inventory');
   subscribeAll();
 }
@@ -1140,8 +1219,12 @@ function subscribeAll(){
 }
 function subscribeMessages(){
   if(unsubMsg) unsubMsg();
-  let q = db.collection('messages').where('location','==',currentLocation);
-  q = isAdmin ? q.where('recipients','array-contains',currentUser.email) : q.where('submittedByEmail','==',currentUser.email);
+  // Not scoped by location — admins see everything addressed to them across
+  // both The Seventy Five and The Box Hop without switching sides; staff see
+  // everything they've sent, same deal. The tab splits them into two columns.
+  let q = isAdmin
+    ? db.collection('messages').where('recipients','array-contains',currentUser.email)
+    : db.collection('messages').where('submittedByEmail','==',currentUser.email);
   unsubMsg = q.onSnapshot(snap=>{
     messagesCache = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(b.submittedAt?.seconds||0)-(a.submittedAt?.seconds||0));
     if(currentTab==='messages') renderMessages();
@@ -1304,18 +1387,39 @@ $('delete-confirm').addEventListener('click', async ()=>{
 });
 
 /* ============================================================ BROKEN / DAMAGE LOG ============================================================ */
-function clearDamageSelection(){
+$('dmg-house').addEventListener('change', e=>{
+  dmgSelectedHouse = e.target.value;
+  clearDamageSelection(false);
+});
+$('dmg-house-filter').addEventListener('change', e=>{
+  dmgHouseFilter = e.target.value;
+  renderDamageLog();
+});
+
+function itemsForDamageSearch(){
+  if(currentLocation!=='boxhop' || !dmgSelectedHouse) return itemsCache;
+  const storePrefix = HOUSE_TO_STORE[dmgSelectedHouse];
+  return itemsCache.filter(i=> i.category.startsWith(storePrefix));
+}
+
+function clearDamageSelection(resetHouse){
   selectedDamageItem = null;
   $('dmg-selected-chip').innerHTML = '';
   $('dmg-item-search').value = '';
   $('dmg-item-search').disabled = false;
   $('dmg-item-results').style.display = 'none';
+  if(resetHouse !== false){ dmgSelectedHouse = ''; $('dmg-house').value = ''; }
 }
 $('dmg-item-search').addEventListener('input', e=>{
   const term = e.target.value.trim().toLowerCase();
   const results = $('dmg-item-results');
+  if(currentLocation==='boxhop' && !dmgSelectedHouse){
+    results.innerHTML = `<div class="search-result-row">Pick a house first</div>`;
+    results.style.display = 'block';
+    return;
+  }
   if(!term){ results.style.display='none'; results.innerHTML=''; return; }
-  const matches = itemsCache.filter(i=> i.name.toLowerCase().includes(term)).slice(0,10);
+  const matches = itemsForDamageSearch().filter(i=> i.name.toLowerCase().includes(term)).slice(0,10);
   if(matches.length===0){ results.innerHTML = `<div class="search-result-row">No matches</div>`; results.style.display='block'; return; }
   results.innerHTML = matches.map(i=> `<div class="search-result-row" onclick="pickDamageItem('${i.id}')">${i.name}<div class="search-result-cat">${i.category} · currently ${i.count}</div></div>`).join('');
   results.style.display = 'block';
@@ -1325,10 +1429,11 @@ window.pickDamageItem = function(itemId){
   $('dmg-item-results').style.display = 'none';
   $('dmg-item-search').value = '';
   $('dmg-item-search').disabled = true;
-  $('dmg-selected-chip').innerHTML = `<span class="selected-item-chip">${selectedDamageItem.name} (${selectedDamageItem.count} on hand) <button type="button" onclick="clearDamageSelection()">✕</button></span>`;
+  $('dmg-selected-chip').innerHTML = `<span class="selected-item-chip">${selectedDamageItem.name} (${selectedDamageItem.count} on hand) <button type="button" onclick="clearDamageSelection(false)">✕</button></span>`;
 };
 
 $('dmg-submit').addEventListener('click', async ()=>{
+  if(currentLocation==='boxhop' && !dmgSelectedHouse){ showToast('Pick which house first.'); return; }
   if(!selectedDamageItem){ showToast('Search and pick an item first.'); return; }
   const type = $('dmg-type').value;
   const qty = parseInt($('dmg-qty').value || '1', 10);
@@ -1337,19 +1442,23 @@ $('dmg-submit').addEventListener('click', async ()=>{
   try{
     const newCount = Math.max(0, selectedDamageItem.count - qty);
     await db.collection('items').doc(selectedDamageItem.id).update({ count: newCount, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-    await db.collection('damagelog').add({
+    const payload = {
       location: currentLocation, itemId: selectedDamageItem.id, itemName: selectedDamageItem.name, quantity: qty, type, eventName,
       staffName: whoAmI(), timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    };
+    if(currentLocation==='boxhop') payload.house = dmgSelectedHouse;
+    await db.collection('damagelog').add(payload);
     showToast('Logged.');
     clearDamageSelection(); $('dmg-qty').value=1; $('dmg-event').value='';
   }catch(err){ console.error(err); showToast('Could not save — try again.'); }
 });
 
 function renderDamageLog(){
-  if(damagelogCache.length===0){ $('damagelog-list').innerHTML = `<div class="empty-state">Nothing logged yet for ${LOCATIONS[currentLocation]}.</div>`; return; }
+  let list = damagelogCache;
+  if(currentLocation==='boxhop' && dmgHouseFilter) list = list.filter(e=> e.house === dmgHouseFilter);
+  if(list.length===0){ $('damagelog-list').innerHTML = `<div class="empty-state">Nothing logged yet${dmgHouseFilter ? ' for '+dmgHouseFilter : ''}.</div>`; return; }
   let html=''; let lastLabel=null;
-  damagelogCache.forEach(entry=>{
+  list.forEach(entry=>{
     const label = monthYearLabel(entry.timestamp);
     if(label !== lastLabel){ html += `<div class="month-sep">${label}</div>`; lastLabel = label; }
     const cls = entry.type==='broken' ? 'kind-broken' : 'kind-used';
@@ -1357,7 +1466,7 @@ function renderDamageLog(){
     html += `<div class="log-row">
       <span class="log-kind ${cls}">${kindLabel}</span>
       <div class="log-body">
-        <div>${entry.quantity} × ${entry.itemName}${entry.eventName ? ' — ' + entry.eventName : ''}</div>
+        <div>${entry.house ? '<strong>'+entry.house+'</strong> — ' : ''}${entry.quantity} × ${entry.itemName}${entry.eventName ? ' — ' + entry.eventName : ''}</div>
         <div class="log-meta">${entry.staffName} · ${fmtDate(entry.timestamp)}</div>
       </div>
       ${isAdmin ? `<button class="log-delete" onclick="deleteDamageEntry('${entry.id}')">Delete</button>` : ''}
@@ -1375,9 +1484,13 @@ window.deleteDamageEntry = async function(id){
 $('maintenance-form').addEventListener('submit', async e=>{
   e.preventDefault();
   const category=$('maint-category').value, priority=$('maint-priority').value, handler=$('maint-handler').value, description=$('maint-description').value.trim();
+  const house = currentLocation==='boxhop' ? $('maint-house').value : null;
   if(!description) return;
+  if(currentLocation==='boxhop' && !house){ showToast('Pick which house first.'); return; }
   try{
-    await db.collection('maintenance').add({ location:currentLocation, category, priority, handler, description, status:'open', reportedBy: whoAmI(), reportedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    const payload = { location:currentLocation, category, priority, handler, description, status:'open', reportedBy: whoAmI(), reportedAt: firebase.firestore.FieldValue.serverTimestamp() };
+    if(house) payload.house = house;
+    await db.collection('maintenance').add(payload);
     showToast('Reported.'); e.target.reset();
   }catch(err){ console.error(err); showToast('Could not save — try again.'); }
 });
@@ -1390,7 +1503,7 @@ function renderMaintenance(){
   const openCount = maintenanceCache.filter(m=>m.status==='open').length;
   $('maint-chip').style.display = openCount?'inline-block':'none'; $('maint-chip').textContent = openCount;
   const {open, resolved} = splitOpenResolved(maintenanceCache, 'resolvedAt');
-  open.sort((a,b)=>{ const r=(PRIORITY_RANK[a.priority]??9)-(PRIORITY_RANK[b.priority]??9); return r!==0?r:(a.reportedAt?.seconds||0)-(b.reportedAt?.seconds||0); });
+  open.sort((a,b)=>{ const r=priorityRank(a.priority)-priorityRank(b.priority); return r!==0?r:(a.reportedAt?.seconds||0)-(b.reportedAt?.seconds||0); });
   resolved.sort((a,b)=>(b.resolvedAt?.seconds||0)-(a.resolvedAt?.seconds||0));
   if(maintenanceCache.length===0){ $('maintenance-list').innerHTML = `<div class="empty-state">No maintenance reports for ${LOCATIONS[currentLocation]}.</div>`; return; }
   let html='';
@@ -1402,7 +1515,7 @@ function maintenanceCard(m, isResolved){
   const isUrgent = m.priority && m.priority.startsWith('Urgent');
   return `<div class="card ${isResolved?'card-resolved':''}">
     <div class="card-top">
-      <div><div class="card-title">${m.category}</div><div class="card-tags"><span class="tag ${isUrgent?'tag-urgent':''}">${m.priority}</span><span class="tag">${m.handler}</span><span class="tag">${m.status==='open'?'Open':'Resolved'}</span></div></div>
+      <div><div class="card-title">${m.category}</div><div class="card-tags">${m.house ? `<span class="tag">${m.house}</span>` : ''}<span class="tag ${isUrgent?'tag-urgent':''}">${m.priority}</span><span class="tag">${m.handler}</span><span class="tag">${m.status==='open'?'Open':'Resolved'}</span></div></div>
       <div class="card-actions">
         ${(isAdmin && m.status==='open') ? `<button class="btn btn-amber btn-sm" onclick="resolveMaintenance('${m.id}')">Mark resolved</button>` : ''}
         ${(isAdmin && m.status!=='open') ? `<button class="btn btn-ghost btn-sm" onclick="undoMaintenance('${m.id}')">Undo</button>` : ''}
@@ -1422,13 +1535,17 @@ window.undoMaintenance = async function(id){
 };
 
 /* ============================================================ EVENT REQUESTS ============================================================ */
+$('req-paid').addEventListener('change', e=>{ $('req-amount-field').style.display = e.target.checked ? 'block' : 'none'; });
 $('request-form').addEventListener('submit', async e=>{
   e.preventDefault();
   const description=$('req-description').value.trim(), eventDate=$('req-date').value||null;
+  const paid = $('req-paid').checked;
+  const amount = paid && $('req-amount').value ? parseFloat($('req-amount').value) : null;
   if(!description) return;
   try{
-    await db.collection('requests').add({ location:currentLocation, description, eventDate, status:'open', requestedBy: whoAmI(), requestedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    await db.collection('requests').add({ location:currentLocation, description, eventDate, paid, amount, status:'open', requestedBy: whoAmI(), requestedAt: firebase.firestore.FieldValue.serverTimestamp() });
     showToast('Requested.'); e.target.reset();
+    $('req-amount-field').style.display = 'none';
   }catch(err){ console.error(err); showToast('Could not save — try again.'); }
 });
 function renderRequests(){
@@ -1446,7 +1563,7 @@ function renderRequests(){
 function requestCard(r, isResolved){
   return `<div class="card ${isResolved?'card-resolved':''}">
     <div class="card-top">
-      <div class="card-tags">${r.eventDate?`<span class="tag">For ${r.eventDate}</span>`:''}<span class="tag">${r.status==='open'?'Open':'Fulfilled'}</span></div>
+      <div class="card-tags">${r.eventDate?`<span class="tag">For ${r.eventDate}</span>`:''}${r.paid?`<span class="tag">Paid${r.amount?' $'+r.amount.toFixed(2):''}</span>`:''}<span class="tag">${r.status==='open'?'Open':'Fulfilled'}</span></div>
       <div class="card-actions">
         ${(isAdmin && r.status==='open') ? `<button class="btn btn-amber btn-sm" onclick="fulfillRequest('${r.id}')">Mark fulfilled</button>` : ''}
         ${(isAdmin && r.status!=='open') ? `<button class="btn btn-ghost btn-sm" onclick="undoRequest('${r.id}')">Undo</button>` : ''}
@@ -1528,7 +1645,7 @@ $('message-form').addEventListener('submit', async e=>{
   const message = $('msg-body').value.trim();
   const payload = {
     location: currentLocation, type, message: message || null,
-    recipients: RECIPIENT_MAP[recipientKey], status: 'open',
+    recipients: RECIPIENT_OPTIONS[currentLocation][recipientKey], status: 'open',
     submittedByName: whoAmI(), submittedByEmail: currentUser.email,
     submittedAt: firebase.firestore.FieldValue.serverTimestamp()
   };
@@ -1552,41 +1669,43 @@ $('message-form').addEventListener('submit', async e=>{
 
 $('msg-type-filter').addEventListener('change', e=>{ msgTypeFilter = e.target.value; renderMessages(); });
 
+function sameRecipientSet(a,b){ return a && b && a.length===b.length && a.every(x=>b.includes(x)); }
 function recipientLabel(recipients){
   if(!recipients) return '';
-  if(recipients.length === ADMIN_EMAILS.length) return 'All management';
+  if(sameRecipientSet(recipients, RECIPIENT_OPTIONS.the75.All) || sameRecipientSet(recipients, RECIPIENT_OPTIONS.boxhop.All)) return 'All management';
   return recipients.map(e=> RECIPIENT_NAME[e] || e).join(', ');
+}
+function messageCard(m){
+  let body = '';
+  if(m.type === 'Meeting request'){
+    body = `<div><strong>${m.meetingFormat}</strong> · Wants present: ${m.meetingAttendees}</div>
+      <div style="margin-top:4px;">Proposed times:<br>${(m.meetingTimes||[]).map(t=> new Date(t).toLocaleString(undefined,{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})).join('<br>')}</div>
+      ${m.message ? `<div style="margin-top:8px;">${m.message}</div>` : ''}`;
+  } else {
+    body = m.message || '';
+  }
+  return `<div class="card">
+    <div class="card-top">
+      <div class="card-tags"><span class="tag">${m.type}</span><span class="tag">To: ${recipientLabel(m.recipients)}</span><span class="tag">${m.status==='reviewed'?'Reviewed':'Open'}</span></div>
+      <div class="card-actions">
+        ${(isAdmin && m.status!=='reviewed') ? `<button class="btn btn-ghost btn-sm" onclick="reviewMessage('${m.id}')">Mark reviewed</button>` : ''}
+        ${isAdmin ? `<button class="log-delete" onclick="deleteMessage('${m.id}')">Delete</button>` : ''}
+      </div>
+    </div>
+    <div class="card-desc">${body}</div>
+    <div class="card-meta">${isAdmin ? 'From '+m.submittedByName+' · ' : ''}${fmtDate(m.submittedAt)}</div>
+  </div>`;
 }
 function renderMessages(){
   $('messages-sub').textContent = isAdmin
-    ? "Messages sent to you — other admins' private messages stay private."
+    ? "Messages sent to you, from both sides — other admins' private messages stay private."
     : "Only management can see these. You can see what you've sent below.";
   let list = messagesCache;
   if(msgTypeFilter) list = list.filter(m=> m.type === msgTypeFilter);
-  if(list.length===0){ $('messages-list').innerHTML = `<div class="empty-state">${isAdmin ? 'Nothing here.' : "You haven't sent anything yet."}</div>`; return; }
-  let html='';
-  list.forEach(m=>{
-    let body = '';
-    if(m.type === 'Meeting request'){
-      body = `<div><strong>${m.meetingFormat}</strong> · Wants present: ${m.meetingAttendees}</div>
-        <div style="margin-top:4px;">Proposed times:<br>${(m.meetingTimes||[]).map(t=> new Date(t).toLocaleString(undefined,{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})).join('<br>')}</div>
-        ${m.message ? `<div style="margin-top:8px;">${m.message}</div>` : ''}`;
-    } else {
-      body = m.message || '';
-    }
-    html += `<div class="card">
-      <div class="card-top">
-        <div class="card-tags"><span class="tag">${m.type}</span><span class="tag">To: ${recipientLabel(m.recipients)}</span><span class="tag">${m.status==='reviewed'?'Reviewed':'Open'}</span></div>
-        <div class="card-actions">
-          ${(isAdmin && m.status!=='reviewed') ? `<button class="btn btn-ghost btn-sm" onclick="reviewMessage('${m.id}')">Mark reviewed</button>` : ''}
-          ${isAdmin ? `<button class="log-delete" onclick="deleteMessage('${m.id}')">Delete</button>` : ''}
-        </div>
-      </div>
-      <div class="card-desc">${body}</div>
-      <div class="card-meta">${isAdmin ? 'From '+m.submittedByName+' · ' : ''}${fmtDate(m.submittedAt)}</div>
-    </div>`;
-  });
-  $('messages-list').innerHTML = html;
+  const the75List = list.filter(m=> m.location==='the75');
+  const boxhopList = list.filter(m=> m.location==='boxhop');
+  $('messages-list-the75').innerHTML = the75List.length ? the75List.map(messageCard).join('') : `<div class="empty-state">${isAdmin ? 'Nothing here.' : "You haven't sent anything here."}</div>`;
+  $('messages-list-boxhop').innerHTML = boxhopList.length ? boxhopList.map(messageCard).join('') : `<div class="empty-state">${isAdmin ? 'Nothing here.' : "You haven't sent anything here."}</div>`;
 }
 window.reviewMessage = async function(id){
   try{ await db.collection('messages').doc(id).update({status:'reviewed'}); showToast('Marked reviewed.'); }
@@ -1624,11 +1743,17 @@ function clearPurchaseSelection(){
   $('pur-item-results').style.display = 'none';
   updateRestockVisibility();
 }
+$('pur-property').addEventListener('change', ()=> clearPurchaseSelection());
+function itemsForPurchaseSearch(){
+  if(currentLocation!=='boxhop') return itemsCache;
+  const prop = $('pur-property').value;
+  return itemsCache.filter(i=> i.category.startsWith(prop));
+}
 $('pur-item-search').addEventListener('input', e=>{
   const term = e.target.value.trim().toLowerCase();
   const results = $('pur-item-results');
   if(!term){ results.style.display='none'; results.innerHTML=''; return; }
-  const matches = itemsCache.filter(i=> i.name.toLowerCase().includes(term)).slice(0,10);
+  const matches = itemsForPurchaseSearch().filter(i=> i.name.toLowerCase().includes(term)).slice(0,10);
   let html = matches.map(i=> `<div class="search-result-row" onclick="pickPurchaseItem('${i.id}')">${i.name}<div class="search-result-cat">${i.category} · currently ${i.count}</div></div>`).join('');
   html += `<div class="search-result-row" onclick="usePurchaseFreeText()"><em>Use "${e.target.value.trim()}" as a new item name</em></div>`;
   results.innerHTML = html;
@@ -1666,6 +1791,7 @@ $('pur-submit').addEventListener('click', async ()=>{
     location: currentLocation, entryType, itemId: selectedPurchaseItem.id, itemName: selectedPurchaseItem.name,
     vendor, date, notes, receiptUrl, purchasedBy: whoAmI(), purchasedAt: firebase.firestore.FieldValue.serverTimestamp()
   };
+  if(currentLocation==='boxhop') payload.property = $('pur-property').value;
   let addToInventory = false, qty = 0;
 
   if(entryType === 'purchase'){
