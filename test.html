@@ -306,6 +306,7 @@
     <button data-tab="requests"><span id="requests-tab-label">Event Requests</span> <span class="count-chip" id="req-chip" style="display:none;">0</span></button>
     <button data-tab="wishlist">Wishlist</button>
     <button data-tab="messages">Message to Management</button>
+    <button data-tab="reorder" id="reorder-tab-btn" style="display:none;">Shopping List</button>
     <button data-tab="purchases" id="purchases-tab-btn" style="display:none;">Purchases &amp; Receipts</button>
   </nav>
 
@@ -456,6 +457,16 @@
       <div class="store-split">
         <div class="store-col"><div class="store-col-title">The Seventy Five</div><div id="messages-list-the75"></div></div>
         <div class="store-col"><div class="store-col-title">The Box Hop</div><div id="messages-list-boxhop"></div></div>
+      </div>
+    </div>
+
+    <!-- ---- REORDER LIST ---- -->
+    <div id="tab-reorder" style="display:none;">
+      <div class="section-head"><h2>Shopping List</h2></div>
+      <div class="muted" style="margin-bottom:14px;">Everything currently low or out, across both properties — out-of-stock items first, no need to dig through Total Inventory. Restock or buy straight from here.</div>
+      <div class="store-split">
+        <div class="store-col"><div class="store-col-title">The Seventy Five</div><div id="reorder-list-the75"></div></div>
+        <div class="store-col"><div class="store-col-title">The Box Hop</div><div id="reorder-list-boxhop"></div></div>
       </div>
     </div>
 
@@ -1032,7 +1043,10 @@ const BOXHOP_SEED_ITEMS = [
 /* ============================================================ STATE ============================================================ */
 let currentUser = null, isAdmin = false, currentLocation = 'the75', currentTab = 'inventory', appInited = false;
 let itemsCache = [], maintenanceCache = [], requestsCache = [], wishlistCache = [], messagesCache = [], damagelogCache = [], purchasesCache = [];
-let unsubItems=null, unsubMaint=null, unsubReq=null, unsubWish=null, unsubMsg=null, unsubDamage=null, unsubPurchases=null;
+let itemsByLoc = { the75: [], boxhop: [] };
+let unsubItemsThe75=null, unsubItemsBoxhop=null;
+let unsubMaint=null, unsubReq=null, unsubWish=null, unsubMsg=null, unsubDamage=null, unsubPurchases=null;
+function findItemById(id){ return itemsByLoc.the75.find(i=>i.id===id) || itemsByLoc.boxhop.find(i=>i.id===id); }
 let restockTargetItem = null, deleteTargetItem = null, selectedDamageItem = null, selectedPurchaseItem = null;
 let categoryCollapsed = {};
 let purchaseHistoryOpen = {};
@@ -1107,13 +1121,30 @@ auth.onAuthStateChanged(user=>{
     $('login-screen').style.display='none';
     refreshWhoLabel(); initApp();
     $('purchases-tab-btn').style.display = isAdmin ? 'inline-block' : 'none';
+    $('reorder-tab-btn').style.display = isAdmin ? 'inline-block' : 'none';
     if(!user.displayName) $('name-backdrop').classList.add('open');
     $('picker-screen').style.display='flex'; $('app').style.display='none';
+    subscribeItemsBoth();
   } else {
     $('login-screen').style.display='flex'; $('picker-screen').style.display='none'; $('app').style.display='none';
-    [unsubItems,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage,unsubPurchases].forEach(u=>u&&u());
+    [unsubItemsThe75,unsubItemsBoxhop,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage,unsubPurchases].forEach(u=>u&&u());
   }
 });
+
+function subscribeItemsBoth(){
+  if(unsubItemsThe75) unsubItemsThe75();
+  if(unsubItemsBoxhop) unsubItemsBoxhop();
+  unsubItemsThe75 = db.collection('items').where('location','==','the75').onSnapshot(snap=>{
+    itemsByLoc.the75 = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    if(currentLocation==='the75'){ itemsCache = itemsByLoc.the75; if(currentTab==='inventory') renderInventory(); }
+    if(currentTab==='reorder') renderReorderList();
+  }, e=>console.error(e));
+  unsubItemsBoxhop = db.collection('items').where('location','==','boxhop').onSnapshot(snap=>{
+    itemsByLoc.boxhop = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    if(currentLocation==='boxhop'){ itemsCache = itemsByLoc.boxhop; if(currentTab==='inventory') renderInventory(); }
+    if(currentTab==='reorder') renderReorderList();
+  }, e=>console.error(e));
+}
 
 /* ============================================================ INIT / TABS / LOCATION ============================================================ */
 function initApp(){
@@ -1126,10 +1157,11 @@ function populateSelect(sel, arr){ sel.innerHTML = arr.map(v=>`<option value="${
 function setTab(tab){
   currentTab = tab;
   document.querySelectorAll('nav.tabs button').forEach(b=> b.classList.toggle('active', b.dataset.tab===tab));
-  ['inventory','damagelog','maintenance','requests','wishlist','messages','purchases'].forEach(t=>{ $('tab-'+t).style.display = (t===tab)?'block':'none'; });
+  ['inventory','damagelog','maintenance','requests','wishlist','messages','purchases','reorder'].forEach(t=>{ $('tab-'+t).style.display = (t===tab)?'block':'none'; });
   if(tab==='damagelog') renderDamageLog();
   if(tab==='messages') renderMessages();
   if(tab==='purchases') renderPurchases();
+  if(tab==='reorder') renderReorderList();
 }
 function setLocation(loc){
   currentLocation = loc;
@@ -1183,16 +1215,14 @@ function setLocation(loc){
   // Purchases: property field
   $('pur-property-field').style.display = isBoxhop ? 'block' : 'none';
 
+  itemsCache = itemsByLoc[loc];
   setTab('inventory');
   subscribeAll();
 }
 
 /* ============================================================ FIRESTORE SUBSCRIPTIONS ============================================================ */
 function subscribeAll(){
-  [unsubItems,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage,unsubPurchases].forEach(u=>u&&u());
-
-  unsubItems = db.collection('items').where('location','==',currentLocation)
-    .onSnapshot(snap=>{ itemsCache = snap.docs.map(d=>({id:d.id, ...d.data()})); renderInventory(); }, e=>console.error(e));
+  [unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage,unsubPurchases].forEach(u=>u&&u());
 
   unsubMaint = db.collection('maintenance').where('location','==',currentLocation)
     .onSnapshot(snap=>{ maintenanceCache = snap.docs.map(d=>({id:d.id, ...d.data()})); renderMaintenance(); }, e=>console.error(e));
@@ -1310,6 +1340,39 @@ window.toggleCategory = function(cat){ categoryCollapsed[cat]=!categoryCollapsed
 $('inv-search').addEventListener('input', e=>{ invSearchTerm=e.target.value; renderInventory(); });
 $('inv-low-only').addEventListener('change', e=>{ invLowOnly=e.target.checked; renderInventory(); });
 
+function reorderRow(item){
+  const status = itemStatus(item);
+  const badge = status==='out' ? '<span class="status-badge status-out">Out</span>' : '<span class="status-badge status-low">Low</span>';
+  const unitLabel = item.unit ? ' ' + item.unit : '';
+  const parNote = item.par!=null ? ` · par ${item.par}` : '';
+  const buyLink = item.reorderLink ? `<a class="receipt-link" href="${item.reorderLink}" target="_blank" rel="noopener">Buy</a>` : '';
+  return `<div class="item-card">
+    <div class="item-info">
+      <div class="item-name">${item.name} ${badge}</div>
+      <div class="item-meta">${item.category}${parNote}${item.threshold!=null?' · alert below '+item.threshold:''}</div>
+    </div>
+    <div class="item-count">${item.count}<span class="item-meta" style="display:block;font-size:11px;text-align:right;">${unitLabel}</span></div>
+    <div class="item-actions">
+      ${buyLink}
+      <button class="btn btn-amber btn-sm" onclick="openRestockModal('${item.id}')">Restock</button>
+    </div>
+  </div>`;
+}
+function renderReorderList(){
+  ['the75','boxhop'].forEach(loc=>{
+    const flagged = itemsByLoc[loc]
+      .filter(i=> itemStatus(i) !== 'ok')
+      .sort((a,b)=>{
+        const r = STATUS_RANK[itemStatus(a)] - STATUS_RANK[itemStatus(b)];
+        return r!==0 ? r : (a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
+      });
+    const html = flagged.length
+      ? flagged.map(reorderRow).join('')
+      : `<div class="empty-state">Nothing to reorder for ${LOCATIONS[loc]}.</div>`;
+    $('reorder-list-'+loc).innerHTML = html;
+  });
+}
+
 async function seedInventory(){
   const seedList = currentLocation==='the75' ? SEED_ITEMS : BOXHOP_SEED_ITEMS;
   const chunks=[]; for(let i=0;i<seedList.length;i+=400) chunks.push(seedList.slice(i,i+400));
@@ -1331,7 +1394,7 @@ async function seedInventory(){
 }
 
 window.openRestockModal = function(itemId){
-  restockTargetItem = itemsCache.find(i=>i.id===itemId);
+  restockTargetItem = findItemById(itemId);
   $('restock-title').textContent = 'Restock — ' + restockTargetItem.name;
   $('restock-count').value = restockTargetItem.count; $('restock-threshold').value = restockTargetItem.threshold ?? 0;
   $('restock-par').value = restockTargetItem.par ?? '';
@@ -1375,7 +1438,7 @@ $('add-save').addEventListener('click', async ()=>{
 });
 
 window.openDeleteModal = function(itemId){
-  deleteTargetItem = itemsCache.find(i=>i.id===itemId);
+  deleteTargetItem = findItemById(itemId);
   $('delete-title').textContent = 'Delete — ' + deleteTargetItem.name; $('delete-pin').value = '';
   $('delete-backdrop').classList.add('open');
 };
