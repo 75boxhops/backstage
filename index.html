@@ -1057,7 +1057,7 @@ const BOXHOP_SEED_ITEMS = [
 ];
 
 /* ============================================================ STATE ============================================================ */
-let unsubSelf = null;
+let unsubSelf = null, signingUp = false;
 let currentUser = null, isAdmin = false, currentLocation = 'the75', currentTab = 'inventory', appInited = false;
 let itemsCache = [], maintenanceCache = [], requestsCache = [], wishlistCache = [], messagesCache = [], damagelogCache = [], purchasesCache = [];
 let itemsByLoc = { the75: [], boxhop: [] };
@@ -1116,6 +1116,7 @@ $('signup-form').addEventListener('submit', (e)=>{
   e.preventDefault();
   const name=$('signup-name').value.trim(), email=$('signup-email').value.trim(), pw=$('signup-password').value, code=$('signup-code').value.trim();
   if(code !== STAFF_SIGNUP_CODE){ showAuthMsg("That staff code isn't right — check with your manager.",'error'); return; }
+  signingUp = true;
   auth.createUserWithEmailAndPassword(email,pw).then(async cred=>{
     await cred.user.updateProfile({displayName:name});
     await db.collection('users').doc(cred.user.uid).set({
@@ -1132,7 +1133,7 @@ $('signup-form').addEventListener('submit', (e)=>{
       await auth.signOut();
       showAuthMsg("Account created — management needs to approve it before you can log in.", 'success');
     }
-  }).catch(err=> showAuthMsg(err.message,'error'));
+  }).catch(err=> showAuthMsg(err.message,'error')).finally(()=>{ signingUp = false; });
 });
 $('reset-form').addEventListener('submit', (e)=>{
   e.preventDefault();
@@ -1153,6 +1154,7 @@ $('name-save').addEventListener('click', async ()=>{
 function refreshWhoLabel(){ $('who-label').innerHTML = whoAmI() + (isAdmin?'<span class="admin-pill">Admin</span>':''); }
 
 auth.onAuthStateChanged(async user=>{
+  if(user && signingUp) return; // signup handler finishes its own record + sign-out
   currentUser = user;
   if(user){
     const onList = ADMIN_EMAILS.includes(user.email);
@@ -1169,6 +1171,14 @@ auth.onAuthStateChanged(async user=>{
       try{
         const snap = await db.collection('users').doc(user.uid).get();
         if(snap.exists) status = snap.data().status;
+        else {
+          // No record yet (e.g. signup got interrupted) — create it as pending so management sees it.
+          await db.collection('users').doc(user.uid).set({
+            email: user.email, name: user.displayName || null, status: 'pending',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          status = 'pending';
+        }
       }catch(err){ console.error(err); }
       if(status !== 'approved'){
         await auth.signOut();
