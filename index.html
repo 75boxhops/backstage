@@ -559,6 +559,8 @@
 <div class="modal-backdrop" id="restock-backdrop">
   <div class="modal">
     <h3 id="restock-title">Restock item</h3>
+    <div class="field"><label>Item name</label><input type="text" id="restock-name" maxlength="120"></div>
+    <div class="field"><label>Unit <span class="muted">(optional, e.g. rolls, boxes)</span></label><input type="text" id="restock-unit" maxlength="30"></div>
     <div class="field"><label>New count</label><input type="number" id="restock-count" min="0"></div>
     <div class="field"><label>Low-stock threshold</label><input type="number" id="restock-threshold" min="0"></div>
     <div class="field"><label>Par <span class="muted">(target restock-to level, optional)</span></label><input type="number" id="restock-par" min="0"></div>
@@ -1468,7 +1470,7 @@ function renderInventory(){
         <div class="item-count">${item.count}<span class="item-meta" style="display:block;font-size:11px;text-align:right;">${unitLabel}</span></div>
         <div class="item-actions">
           ${!isAdmin ? `<button class="btn btn-amber btn-sm" onclick="openCountModal('${item.id}')">Update count</button>` : ''}
-          ${isAdmin ? `<button class="btn btn-amber btn-sm" onclick="openRestockModal('${item.id}')">Restock</button>` : ''}
+          ${isAdmin ? `<button class="btn btn-amber btn-sm" onclick="openRestockModal('${item.id}')">Edit / Restock</button>` : ''}
           ${isAdmin ? `<button class="btn btn-danger btn-sm" onclick="openDeleteModal('${item.id}')">Delete</button>` : ''}
         </div></div>`;
     });
@@ -1570,7 +1572,8 @@ $('count-save').addEventListener('click', async ()=>{
 
 window.openRestockModal = function(itemId){
   restockTargetItem = findItemById(itemId);
-  $('restock-title').textContent = 'Restock — ' + restockTargetItem.name;
+  $('restock-title').textContent = 'Edit / Restock — ' + restockTargetItem.name;
+  $('restock-name').value = restockTargetItem.name || ''; $('restock-unit').value = restockTargetItem.unit || '';
   $('restock-count').value = restockTargetItem.count; $('restock-threshold').value = restockTargetItem.threshold ?? 0;
   $('restock-par').value = restockTargetItem.par ?? '';
   $('restock-link').value = restockTargetItem.reorderLink ?? '';
@@ -1582,14 +1585,19 @@ $('restock-save').addEventListener('click', async ()=>{
   const count=parseInt($('restock-count').value||'0',10), threshold=parseInt($('restock-threshold').value||'0',10);
   const parVal = $('restock-par').value.trim();
   const linkVal = normalizeUrl($('restock-link').value) || '';
+  const newName = $('restock-name').value.trim();
+  if(!newName){ showToast('Item name can\'t be empty.'); return; }
+  const newUnit = $('restock-unit').value.trim();
   try{
     await db.collection('items').doc(restockTargetItem.id).update({
+      name: newName,
+      unit: newUnit || firebase.firestore.FieldValue.delete(),
       count, threshold,
       par: parVal ? parseInt(parVal,10) : firebase.firestore.FieldValue.delete(),
       reorderLink: linkVal || firebase.firestore.FieldValue.delete(),
       lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    showToast('Restocked.'); $('restock-backdrop').classList.remove('open');
+    showToast('Saved.'); $('restock-backdrop').classList.remove('open');
   }catch(err){ console.error(err); showToast('Could not save — try again.'); }
 });
 
