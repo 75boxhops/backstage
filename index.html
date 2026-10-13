@@ -546,6 +546,16 @@
 </div>
 
 <!-- ---- RESTOCK MODAL ---- -->
+<div class="modal-backdrop" id="count-backdrop">
+  <div class="modal">
+    <h3 id="count-title">Update count</h3>
+    <div class="field"><label>How many are there now?</label><input type="number" id="count-value" min="0" inputmode="numeric"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="count-cancel">Cancel</button>
+      <button class="btn btn-amber" id="count-save">Save</button>
+    </div>
+  </div>
+</div>
 <div class="modal-backdrop" id="restock-backdrop">
   <div class="modal">
     <h3 id="restock-title">Restock item</h3>
@@ -1457,6 +1467,7 @@ function renderInventory(){
         <div class="item-info"><div class="item-name">${item.name} ${badge}</div><div class="item-meta">${meta}${item.threshold!=null?' · alert below '+item.threshold:''}${parNote}${buyLink}</div></div>
         <div class="item-count">${item.count}<span class="item-meta" style="display:block;font-size:11px;text-align:right;">${unitLabel}</span></div>
         <div class="item-actions">
+          ${!isAdmin ? `<button class="btn btn-amber btn-sm" onclick="openCountModal('${item.id}')">Update count</button>` : ''}
           ${isAdmin ? `<button class="btn btn-amber btn-sm" onclick="openRestockModal('${item.id}')">Restock</button>` : ''}
           ${isAdmin ? `<button class="btn btn-danger btn-sm" onclick="openDeleteModal('${item.id}')">Delete</button>` : ''}
         </div></div>`;
@@ -1537,6 +1548,25 @@ async function seedInventory(){
     showToast('Starter inventory imported. Review pars and reorder points when you get a chance.');
   }catch(err){ console.error(err); showToast('Import failed — check console.'); }
 }
+
+let countTargetItem = null;
+window.openCountModal = function(itemId){
+  countTargetItem = findItemById(itemId);
+  $('count-title').textContent = 'Update count — ' + countTargetItem.name;
+  $('count-value').value = countTargetItem.count;
+  $('count-backdrop').classList.add('open');
+};
+$('count-cancel').addEventListener('click', ()=> $('count-backdrop').classList.remove('open'));
+$('count-save').addEventListener('click', async ()=>{
+  if(!countTargetItem) return;
+  const raw = $('count-value').value.trim();
+  const count = parseInt(raw,10);
+  if(raw==='' || isNaN(count) || count<0){ showToast('Enter a number, 0 or higher.'); return; }
+  try{
+    await db.collection('items').doc(countTargetItem.id).update({ count, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    showToast('Count updated.'); $('count-backdrop').classList.remove('open');
+  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
+});
 
 window.openRestockModal = function(itemId){
   restockTargetItem = findItemById(itemId);
