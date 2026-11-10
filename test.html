@@ -219,6 +219,58 @@
     .item-count{font-size:18px;}
     main{padding:18px 14px 80px;}
   }
+
+  /* Employee Documents */
+  .hb-wrap{display:flex;gap:24px;align-items:flex-start;}
+  .hb-side{width:230px;flex-shrink:0;position:sticky;top:12px;}
+  .hb-group{font-size:11.5px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-soft);margin:4px 0 8px;}
+  .hb-nav button{display:block;width:100%;text-align:left;background:transparent;border:none;border-radius:8px;padding:9px 10px;font-size:13.5px;color:var(--ink-soft);font-weight:500;}
+  .hb-nav button:hover{background:var(--panel);color:var(--ink);}
+  .hb-nav button.active{background:var(--panel);color:var(--ink);font-weight:700;box-shadow:var(--shadow);}
+  .hb-nav .hb-lock{font-size:10.5px;font-weight:700;color:var(--amber-deep);background:var(--amber-wash);padding:1px 6px;border-radius:10px;margin-left:6px;}
+  .hb-select{display:none;width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:15px;margin-bottom:14px;}
+  .hb-main{flex:1;min-width:0;}
+  .hb-doc{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px 28px;}
+  .hb-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  .hb-toolbar .card-actions{align-items:center;}
+  .hb-toolbar select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:13px;}
+  .hb-doc h1{font-size:24px;margin-bottom:6px;}
+  .hb-doc .hb-updated{font-size:12px;color:var(--ink-soft);margin-bottom:18px;}
+  .hb-content{font-size:14.5px;line-height:1.6;}
+  .hb-content h2{font-size:18px;margin:26px 0 8px;}
+  .hb-content h3{font-size:15.5px;margin:20px 0 6px;}
+  .hb-content p{margin:0 0 10px;}
+  .hb-content ul,.hb-content ol{margin:0 0 12px;padding-left:22px;}
+  .hb-content li{margin-bottom:4px;}
+  .hb-content ul.checklist{list-style:none;padding-left:4px;}
+  .hb-content ul.checklist > li{position:relative;padding-left:24px;}
+  .hb-content ul.checklist > li::before{content:"";position:absolute;left:0;top:4px;width:14px;height:14px;border:1.5px solid var(--ink-soft);border-radius:3px;}
+  .hb-content a[data-sec]{color:var(--amber-deep);text-decoration:underline;}
+  .hb-table{overflow-x:auto;margin:0 0 14px;-webkit-overflow-scrolling:touch;}
+  .hb-content table{border-collapse:collapse;width:100%;font-size:13.5px;}
+  .hb-content th,.hb-content td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top;}
+  .hb-content th{background:var(--paper);font-weight:700;}
+  .hb-content td.blank{height:30px;}
+  .hb-content .blank-line{display:block;border-bottom:1px solid var(--ink-soft);height:22px;}
+  .hb-import summary{cursor:pointer;list-style:revert;}
+  .hb-import:not([open]){padding:12px 18px;}
+  .hb-nav button{display:flex !important;align-items:center;justify-content:space-between;gap:6px;}
+  .hb-note{font-size:13px;color:var(--ink-soft);background:var(--amber-wash);border-radius:8px;padding:10px 12px;margin-bottom:14px;}
+  @media (max-width:760px){
+    .hb-wrap{flex-direction:column;gap:0;}
+    .hb-side{display:none;}
+    .hb-select{display:block;}
+    .hb-doc{padding:18px 16px;}
+  }
+  @media print{
+    header.topbar, nav.tabs, .hb-side, .hb-select, .hb-toolbar, .hb-admin, .toast, #docs-head{display:none !important;}
+    body{background:#fff;}
+    main{padding:0;max-width:none;}
+    .hb-doc{border:none;padding:0;}
+    .hb-content th{background:#eee !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .hb-content h2,.hb-content h3{break-after:avoid;}
+    .hb-content tr,.hb-content li{break-inside:avoid;}
+  }
 </style>
 </head>
 <body>
@@ -306,7 +358,9 @@
     <button data-tab="requests"><span id="requests-tab-label">Event Requests</span> <span class="count-chip" id="req-chip" style="display:none;">0</span></button>
     <button data-tab="wishlist">Wishlist</button>
     <button data-tab="messages">Message to Management</button>
+    <button data-tab="docs">Employee Documents</button>
     <button data-tab="reorder" id="reorder-tab-btn" style="display:none;">Shopping List</button>
+    <button data-tab="team" id="team-tab-btn" style="display:none;">Team Accounts <span class="count-chip" id="team-chip" style="display:none;">0</span></button>
     <button data-tab="purchases" id="purchases-tab-btn" style="display:none;">Purchases &amp; Receipts</button>
   </nav>
 
@@ -460,6 +514,37 @@
       </div>
     </div>
 
+
+    <!-- ---- EMPLOYEE DOCUMENTS ---- -->
+    <div id="tab-docs" style="display:none;">
+      <div class="section-head" id="docs-head"><h2>Employee Documents</h2></div>
+      <div class="hb-admin" id="docs-admin" style="display:none;">
+        <details class="fab-form hb-import" id="docs-import-box">
+          <summary><h3 style="display:inline;">Import or update the handbook</h3></summary>
+          <div style="height:10px"></div>
+          <div class="muted" style="margin-bottom:12px;">Management only. Choose the handbook file (<strong>handbook-import.json</strong>). Sections with the same name are replaced, so you can re-import after edits. Visibility settings you've changed here are kept.</div>
+          <input type="file" id="docs-file" accept=".json,application/json">
+          <div id="docs-import-status" class="muted" style="margin-top:8px;"></div>
+        </details>
+      </div>
+      <div id="docs-body"></div>
+    </div>
+
+    <!-- ---- TEAM ACCOUNTS ---- -->
+    <div id="tab-team" style="display:none;">
+      <div class="section-head"><h2>Team Accounts</h2></div>
+      <div class="muted" style="margin-bottom:16px;">Applies to both properties — not just whichever side you're currently viewing. Admin access (you, Emily, Seth, and the two shared inboxes) is set in the app's code, not here.</div>
+
+      <div class="section-sub">Pending approval</div>
+      <div id="team-pending-list"></div>
+
+      <div class="section-sub" style="margin-top:24px;">Active staff</div>
+      <div id="team-active-list"></div>
+
+      <div class="section-sub" style="margin-top:24px;">Deactivated</div>
+      <div id="team-deactivated-list"></div>
+    </div>
+
     <!-- ---- REORDER LIST ---- -->
     <div id="tab-reorder" style="display:none;">
       <div class="section-head"><h2>Shopping List</h2></div>
@@ -530,9 +615,21 @@
 </div>
 
 <!-- ---- RESTOCK MODAL ---- -->
+<div class="modal-backdrop" id="count-backdrop">
+  <div class="modal">
+    <h3 id="count-title">Update count</h3>
+    <div class="field"><label>How many are there now?</label><input type="number" id="count-value" min="0" inputmode="numeric"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="count-cancel">Cancel</button>
+      <button class="btn btn-amber" id="count-save">Save</button>
+    </div>
+  </div>
+</div>
 <div class="modal-backdrop" id="restock-backdrop">
   <div class="modal">
     <h3 id="restock-title">Restock item</h3>
+    <div class="field"><label>Item name</label><input type="text" id="restock-name" maxlength="120"></div>
+    <div class="field"><label>Unit <span class="muted">(optional, e.g. rolls, boxes)</span></label><input type="text" id="restock-unit" maxlength="30"></div>
     <div class="field"><label>New count</label><input type="number" id="restock-count" min="0"></div>
     <div class="field"><label>Low-stock threshold</label><input type="number" id="restock-threshold" min="0"></div>
     <div class="field"><label>Par <span class="muted">(target restock-to level, optional)</span></label><input type="number" id="restock-par" min="0"></div>
@@ -1041,11 +1138,14 @@ const BOXHOP_SEED_ITEMS = [
 ];
 
 /* ============================================================ STATE ============================================================ */
+let unsubSelf = null, signingUp = false;
 let currentUser = null, isAdmin = false, currentLocation = 'the75', currentTab = 'inventory', appInited = false;
 let itemsCache = [], maintenanceCache = [], requestsCache = [], wishlistCache = [], messagesCache = [], damagelogCache = [], purchasesCache = [];
 let itemsByLoc = { the75: [], boxhop: [] };
 let unsubItemsThe75=null, unsubItemsBoxhop=null;
-let unsubMaint=null, unsubReq=null, unsubWish=null, unsubMsg=null, unsubDamage=null, unsubPurchases=null;
+let unsubMaint=null, unsubReq=null, unsubWish=null, unsubMsg=null, unsubDamage=null, unsubPurchases=null, unsubTeam=null;
+let unsubDocs=null, docsCache=[], docsLoaded=false, docsCurrent=null, docsDeleteArmed=null;
+let teamUsersCache = [];
 function findItemById(id){ return itemsByLoc.the75.find(i=>i.id===id) || itemsByLoc.boxhop.find(i=>i.id===id); }
 let restockTargetItem = null, deleteTargetItem = null, selectedDamageItem = null, selectedPurchaseItem = null;
 let categoryCollapsed = {};
@@ -1060,6 +1160,11 @@ function fmtDate(ts){ if(!ts) return ''; const d=ts.toDate?ts.toDate():new Date(
 function monthYearLabel(ts){ if(!ts) return ''; const d=ts.toDate?ts.toDate():new Date(ts); return d.toLocaleDateString(undefined,{month:'long',year:'numeric'}); }
 function daysSince(ts){ if(!ts) return Infinity; const d=ts.toDate?ts.toDate():new Date(ts); return (Date.now()-d.getTime())/(1000*60*60*24); }
 function whoAmI(){ return (currentUser && (currentUser.displayName || currentUser.email)) || 'Unknown'; }
+function normalizeUrl(raw){
+  const v = (raw||'').trim();
+  if(!v) return null;
+  return /^https?:\/\//i.test(v) ? v : 'https://' + v;
+}
 
 /* ============================================================ AUTH ============================================================ */
 const STAFF_SIGNUP_CODE = "backstage75";
@@ -1093,8 +1198,24 @@ $('signup-form').addEventListener('submit', (e)=>{
   e.preventDefault();
   const name=$('signup-name').value.trim(), email=$('signup-email').value.trim(), pw=$('signup-password').value, code=$('signup-code').value.trim();
   if(code !== STAFF_SIGNUP_CODE){ showAuthMsg("That staff code isn't right — check with your manager.",'error'); return; }
-  auth.createUserWithEmailAndPassword(email,pw).then(cred=> cred.user.updateProfile({displayName:name}))
-    .catch(err=> showAuthMsg(err.message,'error'));
+  signingUp = true;
+  auth.createUserWithEmailAndPassword(email,pw).then(async cred=>{
+    await cred.user.updateProfile({displayName:name});
+    await db.collection('users').doc(cred.user.uid).set({
+      email, name, status: 'pending',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    const isAdminEmail = ADMIN_EMAILS.includes(email);
+    if(isAdminEmail){
+      try{ await cred.user.sendEmailVerification(); }catch(e){ console.error(e); }
+      await auth.signOut();
+      showAuthMsg("Account created. We emailed a verification link to "+email+" — click it, then log in.", 'success');
+    } else {
+      // Sign out immediately rather than racing the login gate.
+      await auth.signOut();
+      showAuthMsg("Account created — management needs to approve it before you can log in.", 'success');
+    }
+  }).catch(err=> showAuthMsg(err.message,'error')).finally(()=>{ signingUp = false; });
 });
 $('reset-form').addEventListener('submit', (e)=>{
   e.preventDefault();
@@ -1114,22 +1235,129 @@ $('name-save').addEventListener('click', async ()=>{
 });
 function refreshWhoLabel(){ $('who-label').innerHTML = whoAmI() + (isAdmin?'<span class="admin-pill">Admin</span>':''); }
 
-auth.onAuthStateChanged(user=>{
+auth.onAuthStateChanged(async user=>{
+  if(user && signingUp) return; // signup handler finishes its own record + sign-out
   currentUser = user;
   if(user){
-    isAdmin = ADMIN_EMAILS.includes(user.email);
+    const onList = ADMIN_EMAILS.includes(user.email);
+    if(onList && !user.emailVerified){
+      try{ await user.sendEmailVerification(); }catch(e){ console.error(e); }
+      await auth.signOut();
+      showAuthMsg('Please verify your email first — we just sent a link to '+user.email+'. Click it, then log in again.', 'error');
+      return;
+    }
+    isAdmin = onList;
+    if(!isAdmin){
+      // Server rules enforce this too; this just gives a friendly message.
+      let status = null;
+      try{
+        const snap = await db.collection('users').doc(user.uid).get();
+        if(snap.exists) status = snap.data().status;
+        else {
+          // No record yet (e.g. signup got interrupted) — create it as pending so management sees it.
+          await db.collection('users').doc(user.uid).set({
+            email: user.email, name: user.displayName || null, status: 'pending',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          status = 'pending';
+        }
+      }catch(err){ console.error(err); }
+      if(status !== 'approved'){
+        await auth.signOut();
+        showAuthMsg(status==='deactivated'
+          ? 'This account has been deactivated. Contact management if this seems wrong.'
+          : 'Your account is waiting for approval from management. Check back soon.', 'error');
+        return;
+      }
+      // Sign out instantly if management deactivates this person mid-session.
+      if(unsubSelf) unsubSelf();
+      unsubSelf = db.collection('users').doc(user.uid).onSnapshot(d=>{
+        if(d.exists && d.data().status !== 'approved'){
+          auth.signOut(); showAuthMsg('Your access has been turned off by management.', 'error');
+        }
+      }, e=>console.error(e));
+    }
     $('login-screen').style.display='none';
     refreshWhoLabel(); initApp();
     $('purchases-tab-btn').style.display = isAdmin ? 'inline-block' : 'none';
     $('reorder-tab-btn').style.display = isAdmin ? 'inline-block' : 'none';
+    $('team-tab-btn').style.display = isAdmin ? 'inline-block' : 'none';
     if(!user.displayName) $('name-backdrop').classList.add('open');
     $('picker-screen').style.display='flex'; $('app').style.display='none';
     subscribeItemsBoth();
+    subscribeDocs();
+    if(isAdmin) subscribeTeam();
   } else {
     $('login-screen').style.display='flex'; $('picker-screen').style.display='none'; $('app').style.display='none';
-    [unsubItemsThe75,unsubItemsBoxhop,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage,unsubPurchases].forEach(u=>u&&u());
+    [unsubItemsThe75,unsubItemsBoxhop,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage,unsubPurchases,unsubTeam,unsubSelf,unsubDocs].forEach(u=>u&&u()); unsubSelf=null; unsubDocs=null; docsCache=[]; docsLoaded=false; isAdmin=false;
   }
 });
+
+function subscribeTeam(){
+  if(unsubTeam) unsubTeam();
+  unsubTeam = db.collection('users').onSnapshot(snap=>{
+    teamUsersCache = snap.docs.map(d=>({id:d.id, ...d.data()})).filter(u=> !ADMIN_EMAILS.includes(u.email));
+    const pendingCount = teamUsersCache.filter(u=>u.status==='pending').length;
+    $('team-chip').style.display = pendingCount ? 'inline-block' : 'none';
+    $('team-chip').textContent = pendingCount;
+    if(currentTab==='team') renderTeam();
+  }, e=>console.error(e));
+}
+function renderTeam(){
+  const pending = teamUsersCache.filter(u=>u.status==='pending').sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
+  const active = teamUsersCache.filter(u=>u.status==='approved').sort((a,b)=>(a.name||a.email).localeCompare(b.name||b.email));
+  const deactivated = teamUsersCache.filter(u=>u.status==='deactivated').sort((a,b)=>(b.deactivatedAt?.seconds||0)-(a.deactivatedAt?.seconds||0));
+
+  $('team-pending-list').innerHTML = pending.length ? pending.map(u=>`
+    <div class="card">
+      <div class="card-top">
+        <div><div class="card-title">${u.name || '(no name given)'}</div><div class="card-tags"><span class="tag">${u.email}</span></div></div>
+        <div class="card-actions">
+          <button class="btn btn-amber btn-sm" onclick="approveTeamUser('${u.id}')">Approve</button>
+          <button class="btn btn-danger btn-sm" onclick="denyTeamUser('${u.id}')">Deny</button>
+        </div>
+      </div>
+      <div class="card-meta">Requested ${fmtDate(u.createdAt)}</div>
+    </div>`).join('') : `<div class="empty-state">Nothing waiting on approval.</div>`;
+
+  $('team-active-list').innerHTML = active.length ? active.map(u=>`
+    <div class="card">
+      <div class="card-top">
+        <div><div class="card-title">${u.name || '(no name given)'}</div><div class="card-tags"><span class="tag">${u.email}</span></div></div>
+        <div class="card-actions"><button class="btn btn-ghost btn-sm" onclick="sendTeamReset('${u.email}')">Send password reset</button><button class="btn btn-danger btn-sm" onclick="deactivateTeamUser('${u.id}')">Deactivate</button></div>
+      </div>
+    </div>`).join('') : `<div class="empty-state">No active staff logins yet.</div>`;
+
+  $('team-deactivated-list').innerHTML = deactivated.length ? deactivated.map(u=>`
+    <div class="card card-resolved">
+      <div class="card-top">
+        <div><div class="card-title">${u.name || '(no name given)'}</div><div class="card-tags"><span class="tag">${u.email}</span></div></div>
+        <div class="card-actions"><button class="btn btn-ghost btn-sm" onclick="reactivateTeamUser('${u.id}')">Reactivate</button></div>
+      </div>
+      <div class="card-meta">Deactivated ${fmtDate(u.deactivatedAt)}</div>
+    </div>`).join('') : `<div class="empty-state">Nobody deactivated.</div>`;
+}
+window.sendTeamReset = function(email){
+  auth.sendPasswordResetEmail(email).then(()=> showToast('Reset link sent to '+email)).catch(err=>{ console.error(err); showToast('Could not send — try again.'); });
+};
+window.approveTeamUser = async function(uid){
+  try{ await db.collection('users').doc(uid).update({status:'approved', approvedBy: whoAmI(), approvedAt: firebase.firestore.FieldValue.serverTimestamp()}); showToast('Approved.'); }
+  catch(err){ console.error(err); showToast('Could not save — try again.'); }
+};
+window.denyTeamUser = async function(uid){
+  if(!confirm('Deny this signup? They will not be able to log in.')) return;
+  try{ await db.collection('users').doc(uid).update({status:'deactivated', deactivatedBy: whoAmI(), deactivatedAt: firebase.firestore.FieldValue.serverTimestamp()}); showToast('Denied.'); }
+  catch(err){ console.error(err); showToast('Could not save — try again.'); }
+};
+window.deactivateTeamUser = async function(uid){
+  if(!confirm('Deactivate this account? They\'ll be signed out and unable to log back in.')) return;
+  try{ await db.collection('users').doc(uid).update({status:'deactivated', deactivatedBy: whoAmI(), deactivatedAt: firebase.firestore.FieldValue.serverTimestamp()}); showToast('Deactivated.'); }
+  catch(err){ console.error(err); showToast('Could not save — try again.'); }
+};
+window.reactivateTeamUser = async function(uid){
+  try{ await db.collection('users').doc(uid).update({status:'approved', deactivatedBy: firebase.firestore.FieldValue.delete(), deactivatedAt: firebase.firestore.FieldValue.delete()}); showToast('Reactivated.'); }
+  catch(err){ console.error(err); showToast('Could not save — try again.'); }
+};
 
 function subscribeItemsBoth(){
   if(unsubItemsThe75) unsubItemsThe75();
@@ -1146,6 +1374,130 @@ function subscribeItemsBoth(){
   }, e=>console.error(e));
 }
 
+
+/* ============================================================ EMPLOYEE DOCUMENTS ============================================================ */
+// Content lives in Firestore (collection "handbook"), never in this public page.
+// Staff can only read sections marked visibility "all"; the rules enforce that server-side.
+const DOC_ALLOWED_TAGS = new Set(['H2','H3','H4','P','STRONG','B','EM','I','UL','OL','LI','TABLE','THEAD','TBODY','TR','TH','TD','BR','HR','A','DIV','SPAN']);
+function escHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function sanitizeDocHtml(raw){
+  const doc = new DOMParser().parseFromString('<div>'+(raw||'')+'</div>', 'text/html');
+  const root = doc.body.firstChild;
+  (function clean(node){
+    Array.from(node.childNodes).forEach(ch=>{
+      if(ch.nodeType===3) return;
+      if(ch.nodeType!==1 || !DOC_ALLOWED_TAGS.has(ch.tagName)){ ch.remove(); return; }
+      Array.from(ch.attributes).forEach(a=>{
+        const keep = (a.name==='class' && /^(checklist|hb-table|blank|blank-line)$/.test(a.value))
+                  || (a.name==='data-sec' && /^[a-z0-9-]+$/.test(a.value));
+        if(!keep) ch.removeAttribute(a.name);
+      });
+      if(ch.tagName==='A') ch.setAttribute('href','#');
+      clean(ch);
+    });
+  })(root);
+  return root.innerHTML;
+}
+function subscribeDocs(){
+  if(unsubDocs) unsubDocs();
+  const q = isAdmin ? db.collection('handbook') : db.collection('handbook').where('visibility','==','all');
+  unsubDocs = q.onSnapshot(snap=>{
+    docsCache = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(a.order||0)-(b.order||0));
+    docsLoaded = true;
+    if(currentTab==='docs') renderDocs();
+  }, e=>{ console.error(e); docsLoaded = true; if(currentTab==='docs') renderDocs(); });
+}
+function docsRemember(id){ try{ localStorage.setItem('backstage.docs.section', id); }catch(e){} }
+function docsRecall(){ try{ return localStorage.getItem('backstage.docs.section'); }catch(e){ return null; } }
+function renderDocs(){
+  $('docs-admin').style.display = isAdmin ? 'block' : 'none';
+  if(isAdmin && docsLoaded && !docsCache.length) $('docs-import-box').open = true;
+  const body = $('docs-body');
+  if(!docsLoaded){ body.innerHTML = '<div class="empty-state">Loading…</div>'; return; }
+  if(!docsCache.length){
+    body.innerHTML = `<div class="empty-state">${isAdmin ? 'No documents yet. Import the handbook file above.' : 'No documents have been posted yet.'}</div>`;
+    return;
+  }
+  if(!docsCurrent || !docsCache.find(d=>d.id===docsCurrent)){
+    const saved = docsRecall();
+    docsCurrent = (saved && docsCache.find(d=>d.id===saved)) ? saved : docsCache[0].id;
+  }
+  const groups = [];
+  docsCache.forEach(d=>{ const g=d.group||'Documents'; let grp=groups.find(x=>x.name===g); if(!grp){ grp={name:g, items:[]}; groups.push(grp); } grp.items.push(d); });
+  const lock = d => (isAdmin && d.visibility!=='all') ? '<span class="hb-lock">Mgmt only</span>' : '';
+  const nav = groups.map(g=>`<div class="hb-group">${escHtml(g.name)}</div><div class="hb-nav">${
+    g.items.map(d=>`<button data-doc="${escHtml(d.id)}" class="${d.id===docsCurrent?'active':''}">${escHtml(d.nav||d.title)}${lock(d)}</button>`).join('')
+  }</div>`).join('<div style="height:14px"></div>');
+  const select = `<select class="hb-select" id="docs-select">${groups.map(g=>`<optgroup label="${escHtml(g.name)}">${
+    g.items.map(d=>`<option value="${escHtml(d.id)}" ${d.id===docsCurrent?'selected':''}>${escHtml(d.nav||d.title)}${(isAdmin&&d.visibility!=='all')?' (mgmt only)':''}</option>`).join('')
+  }</optgroup>`).join('')}</select>`;
+  const cur = docsCache.find(d=>d.id===docsCurrent);
+  const adminBar = isAdmin ? `<div class="card-actions">
+      <label class="muted" for="docs-vis">Who can see this:</label>
+      <select id="docs-vis"><option value="all" ${cur.visibility==='all'?'selected':''}>All staff</option><option value="management" ${cur.visibility!=='all'?'selected':''}>Management only</option></select>
+      <button class="btn btn-danger btn-sm" id="docs-delete">${docsDeleteArmed===cur.id?'Tap again to delete':'Delete'}</button>
+    </div>` : '<div></div>';
+  body.innerHTML = `<div class="hb-wrap">
+    <aside class="hb-side">${nav}</aside>
+    <div class="hb-main">
+      ${select}
+      <div class="hb-toolbar">${adminBar}<button class="btn btn-ghost btn-sm" id="docs-print">Print this section</button></div>
+      ${(isAdmin && cur.visibility!=='all') ? '<div class="hb-note">Only management can see this section. Switch it to “All staff” when it’s ready.</div>' : ''}
+      <article class="hb-doc">
+        <h1>${escHtml(cur.title)}</h1>
+        <div class="hb-updated">${cur.updatedAt ? 'Updated '+(cur.updatedAt.toDate?cur.updatedAt.toDate():new Date(cur.updatedAt)).toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'}) : ''}</div>
+        <div class="hb-content">${sanitizeDocHtml(cur.html)}</div>
+      </article>
+    </div>
+  </div>`;
+  body.querySelectorAll('.hb-nav button').forEach(b=> b.addEventListener('click', ()=> openDoc(b.dataset.doc)));
+  $('docs-select').addEventListener('change', e=> openDoc(e.target.value));
+  body.querySelectorAll('a[data-sec]').forEach(a=> a.addEventListener('click', e=>{ e.preventDefault(); if(docsCache.find(d=>d.id===a.dataset.sec)) openDoc(a.dataset.sec); }));
+  $('docs-print').addEventListener('click', ()=> window.print());
+  if(isAdmin){
+    $('docs-vis').addEventListener('change', async e=>{
+      try{ await db.collection('handbook').doc(cur.id).update({visibility: e.target.value, visibilityChangedBy: whoAmI()}); showToast(e.target.value==='all' ? 'Now visible to all staff.' : 'Now management only.'); }
+      catch(err){ console.error(err); showToast('Could not save — try again.'); }
+    });
+    $('docs-delete').addEventListener('click', async ()=>{
+      if(docsDeleteArmed!==cur.id){ docsDeleteArmed = cur.id; renderDocs(); setTimeout(()=>{ if(docsDeleteArmed===cur.id){ docsDeleteArmed=null; if(currentTab==='docs') renderDocs(); } }, 4000); return; }
+      docsDeleteArmed = null;
+      try{ await db.collection('handbook').doc(cur.id).delete(); docsCurrent=null; showToast('Section deleted.'); }
+      catch(err){ console.error(err); showToast('Could not delete — try again.'); }
+    });
+  }
+}
+function openDoc(id){ docsCurrent = id; docsDeleteArmed = null; docsRemember(id); renderDocs(); window.scrollTo({top:0, behavior:'smooth'}); }
+$('docs-file').addEventListener('change', async e=>{
+  const file = e.target.files[0]; if(!file) return;
+  const status = $('docs-import-status');
+  status.textContent = 'Reading file…';
+  try{
+    const data = JSON.parse(await file.text());
+    if(data.format!=='backstage-handbook' || !Array.isArray(data.sections) || !data.sections.length) throw new Error('This isn’t a Backstage handbook file.');
+    const existing = {}; docsCache.forEach(d=> existing[d.id]=d);
+    const batch = db.batch();
+    data.sections.forEach((sec, i)=>{
+      if(!/^[a-z0-9-]{1,60}$/.test(sec.id||'') || !sec.title || typeof sec.html!=='string') throw new Error('Section '+(i+1)+' is missing its name or content.');
+      if(sec.html.length > 900000) throw new Error('Section “'+sec.title+'” is too large.');
+      batch.set(db.collection('handbook').doc(sec.id), {
+        title: String(sec.title), nav: String(sec.nav||sec.title), group: String(sec.group||'Documents'),
+        order: Number(sec.order)||i+1, html: sec.html,
+        visibility: existing[sec.id] ? (existing[sec.id].visibility||'all') : (sec.visibility==='management'?'management':'all'),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: whoAmI()
+      });
+    });
+    status.textContent = 'Saving '+data.sections.length+' sections…';
+    await batch.commit();
+    status.textContent = 'Imported '+data.sections.length+' sections.';
+    showToast('Handbook imported.');
+  }catch(err){
+    console.error(err);
+    status.textContent = 'Import failed: '+(err.message||err);
+  }
+  e.target.value = '';
+});
+
 /* ============================================================ INIT / TABS / LOCATION ============================================================ */
 function initApp(){
   if(appInited) return; appInited = true;
@@ -1157,11 +1509,13 @@ function populateSelect(sel, arr){ sel.innerHTML = arr.map(v=>`<option value="${
 function setTab(tab){
   currentTab = tab;
   document.querySelectorAll('nav.tabs button').forEach(b=> b.classList.toggle('active', b.dataset.tab===tab));
-  ['inventory','damagelog','maintenance','requests','wishlist','messages','purchases','reorder'].forEach(t=>{ $('tab-'+t).style.display = (t===tab)?'block':'none'; });
+  ['inventory','damagelog','maintenance','requests','wishlist','messages','docs','purchases','reorder','team'].forEach(t=>{ $('tab-'+t).style.display = (t===tab)?'block':'none'; });
   if(tab==='damagelog') renderDamageLog();
   if(tab==='messages') renderMessages();
   if(tab==='purchases') renderPurchases();
   if(tab==='reorder') renderReorderList();
+  if(tab==='team') renderTeam();
+  if(tab==='docs') renderDocs();
 }
 function setLocation(loc){
   currentLocation = loc;
@@ -1209,7 +1563,6 @@ function setLocation(loc){
   }
 
   // Messages: recipient options
-  populateSelect($('msg-recipient'), Object.keys(RECIPIENT_OPTIONS[loc]).map(k=> k==='All' ? 'All management' : k).map(x=>x));
   $('msg-recipient').innerHTML = Object.keys(RECIPIENT_OPTIONS[loc]).map(k=> `<option value="${k}">${k==='All'?'All management':k}</option>`).join('');
 
   // Purchases: property field
@@ -1312,7 +1665,8 @@ function renderInventory(){
         <div class="item-info"><div class="item-name">${item.name} ${badge}</div><div class="item-meta">${meta}${item.threshold!=null?' · alert below '+item.threshold:''}${parNote}${buyLink}</div></div>
         <div class="item-count">${item.count}<span class="item-meta" style="display:block;font-size:11px;text-align:right;">${unitLabel}</span></div>
         <div class="item-actions">
-          ${isAdmin ? `<button class="btn btn-amber btn-sm" onclick="openRestockModal('${item.id}')">Restock</button>` : ''}
+          ${!isAdmin ? `<button class="btn btn-amber btn-sm" onclick="openCountModal('${item.id}')">Update count</button>` : ''}
+          ${isAdmin ? `<button class="btn btn-amber btn-sm" onclick="openRestockModal('${item.id}')">Edit / Restock</button>` : ''}
           ${isAdmin ? `<button class="btn btn-danger btn-sm" onclick="openDeleteModal('${item.id}')">Delete</button>` : ''}
         </div></div>`;
     });
@@ -1393,9 +1747,29 @@ async function seedInventory(){
   }catch(err){ console.error(err); showToast('Import failed — check console.'); }
 }
 
+let countTargetItem = null;
+window.openCountModal = function(itemId){
+  countTargetItem = findItemById(itemId);
+  $('count-title').textContent = 'Update count — ' + countTargetItem.name;
+  $('count-value').value = countTargetItem.count;
+  $('count-backdrop').classList.add('open');
+};
+$('count-cancel').addEventListener('click', ()=> $('count-backdrop').classList.remove('open'));
+$('count-save').addEventListener('click', async ()=>{
+  if(!countTargetItem) return;
+  const raw = $('count-value').value.trim();
+  const count = parseInt(raw,10);
+  if(raw==='' || isNaN(count) || count<0){ showToast('Enter a number, 0 or higher.'); return; }
+  try{
+    await db.collection('items').doc(countTargetItem.id).update({ count, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    showToast('Count updated.'); $('count-backdrop').classList.remove('open');
+  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
+});
+
 window.openRestockModal = function(itemId){
   restockTargetItem = findItemById(itemId);
-  $('restock-title').textContent = 'Restock — ' + restockTargetItem.name;
+  $('restock-title').textContent = 'Edit / Restock — ' + restockTargetItem.name;
+  $('restock-name').value = restockTargetItem.name || ''; $('restock-unit').value = restockTargetItem.unit || '';
   $('restock-count').value = restockTargetItem.count; $('restock-threshold').value = restockTargetItem.threshold ?? 0;
   $('restock-par').value = restockTargetItem.par ?? '';
   $('restock-link').value = restockTargetItem.reorderLink ?? '';
@@ -1406,15 +1780,20 @@ $('restock-save').addEventListener('click', async ()=>{
   if(!restockTargetItem) return;
   const count=parseInt($('restock-count').value||'0',10), threshold=parseInt($('restock-threshold').value||'0',10);
   const parVal = $('restock-par').value.trim();
-  const linkVal = $('restock-link').value.trim();
+  const linkVal = normalizeUrl($('restock-link').value) || '';
+  const newName = $('restock-name').value.trim();
+  if(!newName){ showToast('Item name can\'t be empty.'); return; }
+  const newUnit = $('restock-unit').value.trim();
   try{
     await db.collection('items').doc(restockTargetItem.id).update({
+      name: newName,
+      unit: newUnit || firebase.firestore.FieldValue.delete(),
       count, threshold,
       par: parVal ? parseInt(parVal,10) : firebase.firestore.FieldValue.delete(),
       reorderLink: linkVal || firebase.firestore.FieldValue.delete(),
       lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    showToast('Restocked.'); $('restock-backdrop').classList.remove('open');
+    showToast('Saved.'); $('restock-backdrop').classList.remove('open');
   }catch(err){ console.error(err); showToast('Could not save — try again.'); }
 });
 
@@ -1430,7 +1809,7 @@ $('add-save').addEventListener('click', async ()=>{
     const docData = { location:currentLocation, category, name, count, threshold, lastUpdatedBy: whoAmI(), lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp() };
     if(unit) docData.unit = unit;
     if(par) docData.par = parseInt(par,10);
-    if(link) docData.reorderLink = link;
+    if(link) docData.reorderLink = normalizeUrl(link);
     await db.collection('items').add(docData);
     showToast('Item added.'); $('add-name').value=''; $('add-count').value=0; $('add-threshold').value=1; $('add-unit').value=''; $('add-par').value=''; $('add-link').value='';
     $('add-backdrop').classList.remove('open');
@@ -1847,7 +2226,7 @@ $('pur-submit').addEventListener('click', async ()=>{
   const vendor = $('pur-vendor').value.trim();
   const date = $('pur-date').value;
   const notes = $('pur-notes').value.trim() || null;
-  const receiptUrl = $('pur-receipt-link').value.trim() || null;
+  const receiptUrl = normalizeUrl($('pur-receipt-link').value);
   if(!vendor){ showToast('Add a vendor.'); return; }
 
   let payload = {
