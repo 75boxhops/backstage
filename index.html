@@ -6,7 +6,7 @@
 <title>Backstage | The Seventy Five &amp; The Box Hop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;600;700&family=Caladea:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#1C1B18; --ink-soft:#4A473F; --paper:#F3F1EC; --panel:#FFFFFF; --line:#DEDACF;
@@ -219,6 +219,90 @@
     .item-count{font-size:18px;}
     main{padding:18px 14px 80px;}
   }
+
+  /* Employee Documents — styled to match the printed Staff Handbook */
+  .hb-wrap{display:flex;gap:24px;align-items:flex-start;}
+  .hb-side{width:240px;flex-shrink:0;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto;}
+  .hb-group{font-size:10.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#555;margin:16px 0 6px;font-family:'Inter',sans-serif;}
+  .hb-nav button{display:flex;align-items:center;justify-content:space-between;gap:6px;width:100%;text-align:left;background:transparent;border:none;border-radius:6px;padding:7px 10px;font-size:13.5px;color:#333;font-family:'Inter',sans-serif;}
+  .hb-nav button:hover{background:#fff;color:#111;}
+  .hb-nav button.active{background:#111;color:#fff;font-weight:600;}
+  .hb-nav .hb-lock{font-size:10px;font-weight:700;color:#7a5a12;background:#f4ead2;padding:1px 6px;border-radius:10px;white-space:nowrap;}
+  .hb-nav button.active .hb-lock{background:#fff;color:#111;}
+  .hb-select{display:none;width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:15px;margin-bottom:14px;}
+  .hb-main{flex:1;min-width:0;}
+  .hb-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  .hb-toolbar .card-actions{align-items:center;}
+  .hb-toolbar select{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:13px;}
+  .hb-note{font-size:13px;color:#5c4a1c;background:#f4ead2;border-radius:8px;padding:10px 12px;margin-bottom:14px;}
+  .hb-import summary{cursor:pointer;list-style:revert;}
+  .hb-import:not([open]){padding:12px 18px;}
+
+  .hb-page{background:#fff;color:#111;border:1px solid #d6d6d6;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:44px 48px 28px;font-family:'Inter',-apple-system,sans-serif;}
+  .hb-page h1,.hb-page h2,.hb-page h3,.hb-serif{font-family:'Caladea','Cambria',Georgia,serif;font-weight:400;letter-spacing:0;color:#111;}
+  .hb-divider{position:relative;text-align:center;padding:18px 0 26px;margin-bottom:26px;border-bottom:1px solid #111;}
+  .hb-divider .hb-tab{position:absolute;right:-48px;top:-44px;background:#111;color:#fff;width:46px;height:52px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;}
+  .hb-divider .hb-secnum{font-size:11px;letter-spacing:0.28em;text-transform:uppercase;margin-bottom:10px;}
+  .hb-divider h1{font-size:34px;line-height:1.15;margin:0 0 10px;}
+  .hb-divider .hb-part{font-size:10.5px;letter-spacing:0.26em;text-transform:uppercase;color:#333;}
+  .hb-content{font-size:14px;line-height:1.55;}
+  .hb-content h2{font-size:20px;margin:24px 0 8px;}
+  .hb-content h3{font-size:16.5px;margin:18px 0 6px;}
+  .hb-content p{margin:0 0 9px;}
+  .hb-content strong{font-weight:700;}
+  .hb-content ul,.hb-content ol{margin:0 0 11px;padding-left:22px;}
+  .hb-content li{margin-bottom:3px;}
+  .hb-content ul.checklist{list-style:none;padding-left:2px;}
+  .hb-content ul.checklist > li{position:relative;padding-left:22px;}
+  .hb-content ul.checklist > li::before{content:"";position:absolute;left:0;top:4px;width:12px;height:12px;border:1.3px solid #111;}
+  .hb-content a[data-sec]{color:#111;text-decoration:underline;}
+  .hb-table{overflow-x:auto;margin:4px 0 14px;-webkit-overflow-scrolling:touch;}
+  .hb-content table{border-collapse:collapse;width:100%;font-size:13px;}
+  .hb-content th,.hb-content td{border:1px solid #bcbcbc;padding:6px 8px;text-align:left;vertical-align:top;}
+  .hb-content th{background:#e6e6e6;font-weight:700;}
+  .hb-content td.blank{height:28px;}
+  .hb-content .blank-line{display:block;border-bottom:1px solid #111;height:22px;}
+  .hb-footer{margin-top:28px;padding-top:10px;border-top:1px solid #e2e2e2;text-align:center;font-size:11px;color:#777;}
+
+  .hb-cover{border:1.5px solid #111;text-align:center;padding:56px 20px 50px;margin-bottom:34px;}
+  .hb-cover .hb-kicker{font-size:12px;letter-spacing:0.32em;text-transform:uppercase;margin-bottom:16px;}
+  .hb-cover h1{font-size:44px;letter-spacing:0.04em;margin:0 0 12px;text-transform:uppercase;}
+  .hb-cover .hb-sub{font-size:14px;letter-spacing:0.08em;}
+  .hb-toc h2{font-size:24px;margin:0 0 6px;}
+  .hb-toc .hb-toc-note{font-size:12.5px;color:#444;margin-bottom:14px;}
+  .hb-toc-part{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border-top:2px solid #111;padding:10px 0 4px;margin-top:8px;}
+  .hb-toc a{display:flex;justify-content:space-between;gap:10px;padding:7px 2px;border-bottom:1px solid #ddd;color:#111;text-decoration:none;font-size:14px;}
+  .hb-toc a:hover{background:#f3f3f3;}
+  .hb-toc a .hb-toc-lock{font-size:11px;color:#7a5a12;}
+
+  .hb-page a.btn,.hb-toolbar a.btn{text-decoration:none;}
+  .hb-pdf-frame{width:100%;height:78vh;min-height:520px;border:1px solid #d6d6d6;background:#f4f4f4;display:block;}
+  .hb-pdf-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:-6px 0 20px;}
+  .hb-pdf-mobile{display:none;text-align:center;font-size:13.5px;color:#444;padding:6px 0 10px;}
+  .hb-toc a .hb-toc-kind{font-size:11px;color:#777;letter-spacing:.06em;}
+  .hb-admin .form-row .field input{width:100%;}
+  @media (max-width:760px){
+    .hb-pdf-frame{display:none;}
+    .hb-pdf-mobile{display:block;}
+    .hb-wrap{flex-direction:column;gap:0;}
+    .hb-side{display:none;}
+    .hb-select{display:block;}
+    .hb-page{padding:30px 18px 20px;}
+    .hb-divider .hb-tab{right:-18px;top:-30px;width:38px;height:44px;font-size:15px;}
+    .hb-divider h1{font-size:27px;}
+    .hb-cover{padding:38px 12px 34px;}
+    .hb-cover h1{font-size:31px;}
+  }
+  @media print{
+    header.topbar, nav.tabs, .hb-side, .hb-select, .hb-toolbar, .hb-admin, .hb-note, .toast, #docs-head{display:none !important;}
+    body{background:#fff;}
+    main{padding:0;max-width:none;}
+    .hb-page{border:none;box-shadow:none;padding:0;}
+    .hb-divider .hb-tab{right:0;top:0;}
+    .hb-content th,.hb-divider .hb-tab{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .hb-content h2,.hb-content h3{break-after:avoid;}
+    .hb-content tr,.hb-content li{break-inside:avoid;}
+  }
 </style>
 </head>
 <body>
@@ -306,6 +390,7 @@
     <button data-tab="requests"><span id="requests-tab-label">Event Requests</span> <span class="count-chip" id="req-chip" style="display:none;">0</span></button>
     <button data-tab="wishlist">Wishlist</button>
     <button data-tab="messages">Message to Management</button>
+    <button data-tab="docs">Employee Documents</button>
     <button data-tab="reorder" id="reorder-tab-btn" style="display:none;">Shopping List</button>
     <button data-tab="team" id="team-tab-btn" style="display:none;">Team Accounts <span class="count-chip" id="team-chip" style="display:none;">0</span></button>
     <button data-tab="purchases" id="purchases-tab-btn" style="display:none;">Purchases &amp; Receipts</button>
@@ -459,6 +544,31 @@
         <div class="store-col"><div class="store-col-title">The Seventy Five</div><div id="messages-list-the75"></div></div>
         <div class="store-col"><div class="store-col-title">The Box Hop</div><div id="messages-list-boxhop"></div></div>
       </div>
+    </div>
+
+
+    <!-- ---- EMPLOYEE DOCUMENTS ---- -->
+    <div id="tab-docs" style="display:none;">
+      <div class="section-head" id="docs-head"><h2>Employee Documents</h2></div>
+      <div class="hb-admin" id="docs-admin" style="display:none;">
+        <details class="fab-form hb-import" id="docs-import-box">
+          <summary><h3 style="display:inline;">Import or update the handbook</h3></summary>
+          <div style="height:10px"></div>
+          <div class="muted" style="margin-bottom:12px;">Management only. Choose the handbook file (<strong>handbook-import.json</strong>). Sections with the same name are replaced, so you can re-import after edits. Visibility settings you've changed here are kept.</div>
+          <input type="file" id="docs-file" accept=".json,application/json">
+          <div id="docs-import-status" class="muted" style="margin-top:8px;"></div>
+        </details>
+        <details class="fab-form hb-import" id="docs-addpdf-box">
+          <summary><h3 style="display:inline;">Add a PDF to Client Guides</h3></summary>
+          <div class="muted" style="margin:10px 0 12px;">First upload the PDF to the backstage repo on GitHub (Add file → Upload files on the main repo page). Then enter its file name here. To update a PDF later, upload a new file with the same name to GitHub; nothing changes here.</div>
+          <div class="form-row">
+            <div class="field"><label>Title staff will see</label><input type="text" id="addpdf-title" placeholder="e.g. Wedding Guide"></div>
+            <div class="field"><label>File name on GitHub</label><input type="text" id="addpdf-file" placeholder="e.g. wedding-guide.pdf"></div>
+          </div>
+          <button class="btn btn-amber btn-sm" id="addpdf-save">Add PDF</button>
+        </details>
+      </div>
+      <div id="docs-body"></div>
     </div>
 
     <!-- ---- TEAM ACCOUNTS ---- -->
@@ -1075,6 +1185,7 @@ let itemsCache = [], maintenanceCache = [], requestsCache = [], wishlistCache = 
 let itemsByLoc = { the75: [], boxhop: [] };
 let unsubItemsThe75=null, unsubItemsBoxhop=null;
 let unsubMaint=null, unsubReq=null, unsubWish=null, unsubMsg=null, unsubDamage=null, unsubPurchases=null, unsubTeam=null;
+let unsubDocs=null, docsCache=[], docsLoaded=false, docsCurrent=null, docsDeleteArmed=null;
 let teamUsersCache = [];
 function findItemById(id){ return itemsByLoc.the75.find(i=>i.id===id) || itemsByLoc.boxhop.find(i=>i.id===id); }
 let restockTargetItem = null, deleteTargetItem = null, selectedDamageItem = null, selectedPurchaseItem = null;
@@ -1215,10 +1326,11 @@ auth.onAuthStateChanged(async user=>{
     if(!user.displayName) $('name-backdrop').classList.add('open');
     $('picker-screen').style.display='flex'; $('app').style.display='none';
     subscribeItemsBoth();
+    subscribeDocs();
     if(isAdmin) subscribeTeam();
   } else {
     $('login-screen').style.display='flex'; $('picker-screen').style.display='none'; $('app').style.display='none';
-    [unsubItemsThe75,unsubItemsBoxhop,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage,unsubPurchases,unsubTeam,unsubSelf].forEach(u=>u&&u()); unsubSelf=null; isAdmin=false;
+    [unsubItemsThe75,unsubItemsBoxhop,unsubMaint,unsubReq,unsubWish,unsubMsg,unsubDamage,unsubPurchases,unsubTeam,unsubSelf,unsubDocs].forEach(u=>u&&u()); unsubSelf=null; unsubDocs=null; docsCache=[]; docsLoaded=false; isAdmin=false;
   }
 });
 
@@ -1303,6 +1415,179 @@ function subscribeItemsBoth(){
   }, e=>console.error(e));
 }
 
+
+/* ============================================================ EMPLOYEE DOCUMENTS ============================================================ */
+// Content lives in Firestore (collection "handbook"), never in this public page.
+// Staff can only read sections marked visibility "all"; the rules enforce that server-side.
+const DOC_ALLOWED_TAGS = new Set(['H2','H3','H4','P','STRONG','B','EM','I','UL','OL','LI','TABLE','THEAD','TBODY','TR','TH','TD','BR','HR','A','DIV','SPAN']);
+function escHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function sanitizeDocHtml(raw){
+  const doc = new DOMParser().parseFromString('<div>'+(raw||'')+'</div>', 'text/html');
+  const root = doc.body.firstChild;
+  (function clean(node){
+    Array.from(node.childNodes).forEach(ch=>{
+      if(ch.nodeType===3) return;
+      if(ch.nodeType!==1 || !DOC_ALLOWED_TAGS.has(ch.tagName)){ ch.remove(); return; }
+      Array.from(ch.attributes).forEach(a=>{
+        const keep = (a.name==='class' && /^(checklist|hb-table|blank|blank-line)$/.test(a.value))
+                  || (a.name==='data-sec' && /^[a-z0-9-]+$/.test(a.value));
+        if(!keep) ch.removeAttribute(a.name);
+      });
+      if(ch.tagName==='A') ch.setAttribute('href','#');
+      clean(ch);
+    });
+  })(root);
+  return root.innerHTML;
+}
+function pdfHref(u){
+  u = String(u||'').trim();
+  if(/^(docs\/)?[A-Za-z0-9._ -]+\.pdf$/i.test(u) && !u.startsWith('.')) return encodeURI(u);
+  if(/^https:\/\/[^\s"'<>]+$/i.test(u)) return u;
+  return '';
+}
+function subscribeDocs(){
+  if(unsubDocs) unsubDocs();
+  const q = isAdmin ? db.collection('handbook') : db.collection('handbook').where('visibility','==','all');
+  unsubDocs = q.onSnapshot(snap=>{
+    docsCache = snap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(a.order||0)-(b.order||0));
+    docsLoaded = true;
+    if(currentTab==='docs') renderDocs();
+  }, e=>{ console.error(e); docsLoaded = true; if(currentTab==='docs') renderDocs(); });
+}
+function docsRemember(id){ try{ localStorage.setItem('backstage.docs.section', id); }catch(e){} }
+function docsRecall(){ try{ return localStorage.getItem('backstage.docs.section'); }catch(e){ return null; } }
+function renderDocs(){
+  $('docs-admin').style.display = isAdmin ? 'block' : 'none';
+  if(isAdmin && docsLoaded && !docsCache.length) $('docs-import-box').open = true;
+  const body = $('docs-body');
+  if(!docsLoaded){ body.innerHTML = '<div class="empty-state">Loading…</div>'; return; }
+  if(!docsCache.length){
+    body.innerHTML = `<div class="empty-state">${isAdmin ? 'No documents yet. Import the handbook file above.' : 'No documents have been posted yet.'}</div>`;
+    return;
+  }
+  const CONTENTS = '__contents';
+  if(!docsCurrent || (docsCurrent!==CONTENTS && !docsCache.find(d=>d.id===docsCurrent))){
+    const saved = docsRecall();
+    docsCurrent = (saved && (saved===CONTENTS || docsCache.find(d=>d.id===saved))) ? saved : CONTENTS;
+  }
+  const groups = [];
+  docsCache.forEach(d=>{ const g=d.group||'Documents'; let grp=groups.find(x=>x.name===g); if(!grp){ grp={name:g, items:[]}; groups.push(grp); } grp.items.push(d); });
+  const label = d => (d.num ? d.num+'. ' : '') + (d.nav||d.title);
+  const kind = d => d.type==='pdf' ? '<span class="hb-toc-kind">PDF</span>' : '';
+  const hidden = d => isAdmin && d.visibility!=='all';
+  const nav = `<div class="hb-nav"><button data-doc="${CONTENTS}" class="${docsCurrent===CONTENTS?'active':''}">Contents</button></div>` +
+    groups.map(g=>`<div class="hb-group">${escHtml(g.name)}</div><div class="hb-nav">${
+      g.items.map(d=>`<button data-doc="${escHtml(d.id)}" class="${d.id===docsCurrent?'active':''}"><span>${escHtml(label(d))}</span>${hidden(d)?'<span class="hb-lock">Mgmt only</span>':''}</button>`).join('')
+    }</div>`).join('');
+  const select = `<select class="hb-select" id="docs-select"><option value="${CONTENTS}" ${docsCurrent===CONTENTS?'selected':''}>Contents</option>${groups.map(g=>`<optgroup label="${escHtml(g.name)}">${
+    g.items.map(d=>`<option value="${escHtml(d.id)}" ${d.id===docsCurrent?'selected':''}>${escHtml(label(d))}${hidden(d)?' (mgmt only)':''}</option>`).join('')
+  }</optgroup>`).join('')}</select>`;
+  const cur = docsCache.find(d=>d.id===docsCurrent);
+  let page, toolbar;
+  if(!cur){
+    page = `<article class="hb-page">
+      <div class="hb-cover"><div class="hb-kicker">The Seventy Five</div><h1>Staff Handbook</h1><div class="hb-sub">Policies · Standards · Event Day · Forms</div></div>
+      <div class="hb-toc"><h2>Table of Contents</h2><div class="hb-toc-note">Tap a section to open it. Each handbook section has its own Print button; client guides open as the original PDF.</div>
+      ${groups.map(g=>`<div class="hb-toc-part">${escHtml(g.name)}</div>${g.items.map(d=>`<a href="#" data-sec="${escHtml(d.id)}"><span>${escHtml(label(d))}</span>${hidden(d)?'<span class="hb-toc-lock">Management only</span>':kind(d)}</a>`).join('')}`).join('')}
+      </div></article>`;
+    toolbar = `<div class="hb-toolbar"><div></div><button class="btn btn-ghost btn-sm" id="docs-print">Print contents</button></div>`;
+  } else {
+    const adminBar = isAdmin ? `<div class="card-actions">
+        <label class="muted" for="docs-vis">Who can see this:</label>
+        <select id="docs-vis"><option value="all" ${cur.visibility==='all'?'selected':''}>All staff</option><option value="management" ${cur.visibility!=='all'?'selected':''}>Management only</option></select>
+        <button class="btn btn-danger btn-sm" id="docs-delete">${docsDeleteArmed===cur.id?'Tap again to delete':'Delete'}</button>
+      </div>` : '<div></div>';
+    const href = cur.type==='pdf' ? pdfHref(cur.url) : '';
+    toolbar = `<div class="hb-toolbar">${adminBar}${cur.type==='pdf'
+        ? (href?`<a class="btn btn-ghost btn-sm" href="${escHtml(href)}" target="_blank" rel="noopener">Open / Download PDF</a>`:'')
+        : '<button class="btn btn-ghost btn-sm" id="docs-print">Print this section</button>'}</div>` +
+      (hidden(cur) ? '<div class="hb-note">Only management can see this section. Switch it to “All staff” when it’s ready.</div>' : '');
+    const secLabel = cur.num ? 'Section '+cur.num : '';
+    if(cur.type==='pdf'){
+      page = `<article class="hb-page">
+        <div class="hb-divider"><div class="hb-secnum">${escHtml(cur.group||'Client Guides')}</div><h1>${escHtml(cur.title)}</h1><div class="hb-part">The Seventy Five</div></div>
+        ${href ? `<div class="hb-pdf-mobile">On a phone, tap below to see every page.</div>
+        <div class="hb-pdf-actions"><a class="btn btn-amber" href="${escHtml(href)}" target="_blank" rel="noopener">Open PDF</a></div>
+        <iframe class="hb-pdf-frame" src="${escHtml(href)}#view=FitH" title="${escHtml(cur.title)}"></iframe>`
+        : '<div class="empty-state">This PDF’s link isn’t set up correctly.</div>'}
+      </article>`;
+    } else
+    page = `<article class="hb-page">
+      <div class="hb-divider">${cur.num?`<div class="hb-tab">${escHtml(cur.num)}</div>`:''}
+        ${secLabel?`<div class="hb-secnum">${escHtml(secLabel)}</div>`:''}
+        <h1>${escHtml(cur.title)}</h1>
+        ${cur.group?`<div class="hb-part">${escHtml(cur.group)}</div>`:''}
+      </div>
+      <div class="hb-content">${sanitizeDocHtml(cur.html)}</div>
+      <div class="hb-footer">${escHtml((secLabel?secLabel+': ':'')+cur.title)} · The Seventy Five Staff Handbook${cur.updatedAt ? ' · Updated '+(cur.updatedAt.toDate?cur.updatedAt.toDate():new Date(cur.updatedAt)).toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'}) : ''}</div>
+    </article>`;
+  }
+  body.innerHTML = `<div class="hb-wrap"><aside class="hb-side">${nav}</aside><div class="hb-main">${select}${toolbar}${page}</div></div>`;
+  body.querySelectorAll('.hb-nav button').forEach(b=> b.addEventListener('click', ()=> openDoc(b.dataset.doc)));
+  $('docs-select').addEventListener('change', e=> openDoc(e.target.value));
+  body.querySelectorAll('a[data-sec]').forEach(a=> a.addEventListener('click', e=>{ e.preventDefault(); if(docsCache.find(d=>d.id===a.dataset.sec)) openDoc(a.dataset.sec); }));
+  if($('docs-print')) $('docs-print').addEventListener('click', ()=> window.print());
+  if(isAdmin && cur){
+    $('docs-vis').addEventListener('change', async e=>{
+      try{ await db.collection('handbook').doc(cur.id).update({visibility: e.target.value, visibilityChangedBy: whoAmI()}); showToast(e.target.value==='all' ? 'Now visible to all staff.' : 'Now management only.'); }
+      catch(err){ console.error(err); showToast('Could not save — try again.'); }
+    });
+    $('docs-delete').addEventListener('click', async ()=>{
+      if(docsDeleteArmed!==cur.id){ docsDeleteArmed = cur.id; renderDocs(); setTimeout(()=>{ if(docsDeleteArmed===cur.id){ docsDeleteArmed=null; if(currentTab==='docs') renderDocs(); } }, 4000); return; }
+      docsDeleteArmed = null;
+      try{ await db.collection('handbook').doc(cur.id).delete(); docsCurrent=null; showToast('Section deleted.'); }
+      catch(err){ console.error(err); showToast('Could not delete — try again.'); }
+    });
+  }
+}
+function openDoc(id){ docsCurrent = id; docsDeleteArmed = null; docsRemember(id); renderDocs(); window.scrollTo({top:0, behavior:'smooth'}); }
+$('addpdf-save').addEventListener('click', async ()=>{
+  const title = $('addpdf-title').value.trim();
+  let file = $('addpdf-file').value.trim().replace(/^\/+/,'').replace(/^docs\//i,'');
+  if(!title || !file){ showToast('Enter a title and a file name.'); return; }
+  if(!/\.pdf$/i.test(file)) file += '.pdf';
+  const url = file;
+  if(!pdfHref(url)){ showToast('Use letters, numbers, dashes or underscores in the file name.'); return; }
+  const id = ('pdf-'+title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')).slice(0,60);
+  const maxOrder = docsCache.reduce((m,d)=>Math.max(m, d.order||0), 100);
+  try{
+    await db.collection('handbook').doc(id).set({ title, nav: title, group: 'Client Guides', order: maxOrder+1, num: null, type: 'pdf', html: '', url,
+      visibility: 'all', updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: whoAmI() });
+    $('addpdf-title').value=''; $('addpdf-file').value=''; docsCurrent = id; showToast('PDF added.');
+  }catch(err){ console.error(err); showToast('Could not save — try again.'); }
+});
+$('docs-file').addEventListener('change', async e=>{
+  const file = e.target.files[0]; if(!file) return;
+  const status = $('docs-import-status');
+  status.textContent = 'Reading file…';
+  try{
+    const data = JSON.parse(await file.text());
+    if(data.format!=='backstage-handbook' || !Array.isArray(data.sections) || !data.sections.length) throw new Error('This isn’t a Backstage handbook file.');
+    const existing = {}; docsCache.forEach(d=> existing[d.id]=d);
+    const batch = db.batch();
+    data.sections.forEach((sec, i)=>{
+      const isPdf = sec.type==='pdf';
+      if(!/^[a-z0-9-]{1,60}$/.test(sec.id||'') || !sec.title || (isPdf ? !pdfHref(sec.url) : typeof sec.html!=='string')) throw new Error('Section '+(i+1)+' is missing its name or content.');
+      if(!isPdf && sec.html.length > 900000) throw new Error('Section “'+sec.title+'” is too large.');
+      batch.set(db.collection('handbook').doc(sec.id), {
+        title: String(sec.title), nav: String(sec.nav||sec.title), group: String(sec.group||'Documents'),
+        order: Number(sec.order)||i+1, num: Number(sec.num)||null, type: isPdf ? 'pdf' : 'page',
+        html: isPdf ? '' : sec.html, url: isPdf ? String(sec.url) : '',
+        visibility: existing[sec.id] ? (existing[sec.id].visibility||'all') : (sec.visibility==='management'?'management':'all'),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(), updatedBy: whoAmI()
+      });
+    });
+    status.textContent = 'Saving '+data.sections.length+' sections…';
+    await batch.commit();
+    status.textContent = 'Imported '+data.sections.length+' sections.';
+    showToast('Handbook imported.');
+  }catch(err){
+    console.error(err);
+    status.textContent = 'Import failed: '+(err.message||err);
+  }
+  e.target.value = '';
+});
+
 /* ============================================================ INIT / TABS / LOCATION ============================================================ */
 function initApp(){
   if(appInited) return; appInited = true;
@@ -1314,12 +1599,13 @@ function populateSelect(sel, arr){ sel.innerHTML = arr.map(v=>`<option value="${
 function setTab(tab){
   currentTab = tab;
   document.querySelectorAll('nav.tabs button').forEach(b=> b.classList.toggle('active', b.dataset.tab===tab));
-  ['inventory','damagelog','maintenance','requests','wishlist','messages','purchases','reorder','team'].forEach(t=>{ $('tab-'+t).style.display = (t===tab)?'block':'none'; });
+  ['inventory','damagelog','maintenance','requests','wishlist','messages','docs','purchases','reorder','team'].forEach(t=>{ $('tab-'+t).style.display = (t===tab)?'block':'none'; });
   if(tab==='damagelog') renderDamageLog();
   if(tab==='messages') renderMessages();
   if(tab==='purchases') renderPurchases();
   if(tab==='reorder') renderReorderList();
   if(tab==='team') renderTeam();
+  if(tab==='docs') renderDocs();
 }
 function setLocation(loc){
   currentLocation = loc;
